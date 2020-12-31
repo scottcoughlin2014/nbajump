@@ -3,7 +3,7 @@ This repository stands to house a skeleton of what all repos (especially those c
 
 # badges
 [![codecov](https://codecov.io/gh/CIERA-Northwestern/template/branch/main/graph/badge.svg?token=jAAQvHfHat)](https://codecov.io/gh/CIERA-Northwestern/template)
-![Unit Test YOURPACKAGE](https://github.com/CIERA-Northwestern/template/workflows/Unit%20Test%20YOURPACKAGE/badge.svg)
+![Unit Test nbajump](https://github.com/CIERA-Northwestern/template/workflows/Unit%20Test%20nbajump/badge.svg)
 
 # Documentation URL
 [Documentation](https://ciera-northwestern.github.io/template/)
@@ -19,15 +19,15 @@ After this, you will want to `git clone` the repository locally and then use `gi
 An example of the commands would be (On MAC)
 
 ```
-git grep -l 'YOURPACKAGE' | xargs sed -i '' -e 's/YOURPACKAGE/mypackage/g'
-git grep -l 'YOUR NAME' | xargs sed -i '' -e 's/YOUR NAME/myname/g'
-git grep -l 'YOUREMAIL' | xargs sed -i '' -e 's/YOUREMAIL/myemail/g'
+git grep -l 'nbajump' | xargs sed -i '' -e 's/nbajump/mypackage/g'
+git grep -l 'Giacomo Terreran' | xargs sed -i '' -e 's/Giacomo Terreran/myname/g'
+git grep -l 'giacomo.terreran@northwestern.edu' | xargs sed -i '' -e 's/giacomo.terreran@northwestern.edu/myemail/g'
 ```
 
 After you have done this, you must also change the name of the package in the repo using `git mv`
 
 ```
-git mv YOURPACKAGE/ mypackage
+git mv nbajump/ mypackage
 ```
 
 Now we can commit and update the template so we are ready for developing your own package.
