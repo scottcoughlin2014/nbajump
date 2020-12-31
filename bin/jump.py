@@ -1,7 +1,22 @@
 #!/usr/bin/env python
 from requests import get
 from datetime import datetime
-import sys,json,os
+import sys,json,os,argparse
+
+def parse_commandline():
+    """Parse the arguments given on the command-line.
+    """
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--year",
+                        help="Year for NBA data",
+                        required=True, type=int)
+    args = parser.parse_args()
+
+    return args
+
+# READ COMMANDLINE ARGUMENTS
+###########################################################################
+args = parse_commandline()
 
 tot_games=0
 tot_score_first_possession=0
@@ -10,7 +25,7 @@ tot_score_first_possession=0
 #get teams json. Download it once, and save it locally.
 #if the script doesn't find it, it will download it again
 if not os.path.isfile('teams.json'):
-    team_url = 'http://data.nba.net/prod/v1/{year}/teams.json'
+    team_url = 'http://data.nba.net/prod/v1/{0}/teams.json'.format(args.year)
     team_json=get(team_url).json()
     with open('teams.json', 'w') as outfile:
             json.dump(team_json, outfile, indent=4)
