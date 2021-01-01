@@ -328,7 +328,7 @@ class Command(BaseCommand):
                             first_scorer.number_of_times = away_scorer[1]
                             first_scorer.save()
                             # get the latest odds for this player to score the first basket
-                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today())
+                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
                         except:
                             odds_away.first_to_score_odds = "N/A"
 
@@ -342,7 +342,7 @@ class Command(BaseCommand):
                             first_scorer.number_of_times = home_scorer[1]
                             first_scorer.save()
                             # get the latest odds for this player to score the first basket
-                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today())[-1]
+                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
                         except:
                             breakpoint()
                             odds_home.first_to_score_odds = "N/A"
