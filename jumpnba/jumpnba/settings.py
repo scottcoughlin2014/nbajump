@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'players',
     'firsttoscore',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
