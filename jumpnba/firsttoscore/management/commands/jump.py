@@ -329,8 +329,9 @@ class Command(BaseCommand):
                             first_scorer.save()
                             # get the latest odds for this player to score the first basket
                             odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+                            away_first_to_score_odds = odds_away.first_to_score_odds
                         except:
-                            odds_away.first_to_score_odds = "N/A"
+                            away_first_to_score_odds = "N/A"
 
                     if team_stats[home_team]['first_scorer'][i]=='':
                         home_scorer= ['','']
@@ -343,14 +344,14 @@ class Command(BaseCommand):
                             first_scorer.save()
                             # get the latest odds for this player to score the first basket
                             odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+                            home_first_to_score_odds = odds_home.first_to_score_odds
                         except:
-                            breakpoint()
-                            odds_home.first_to_score_odds = "N/A"
+                            home_first_to_score_odds = "N/A"
 
                     if i==0:
-                        print('{: >35} {: >21} {: >3} Odds {} {: >21} {: >3} Odds {}'.format('First scorers:',away_scorer[0],away_scorer[1],odds_away.first_to_score_odds,home_scorer[0],home_scorer[1],odds_home.first_to_score_odds))
+                        print('{: >35} {: >21} {: >3} Odds {} {: >21} {: >3} Odds {}'.format('First scorers:',away_scorer[0],away_scorer[1],away_first_to_score_odds,home_scorer[0],home_scorer[1], home_first_to_score_odds))
                     else:
-                        print('{: >35} {: >21} {: >3} Odds {} {: >21} {: >3} Odds {}'.format('',away_scorer[0],away_scorer[1],odds_away.first_to_score_odds,home_scorer[0],home_scorer[1], odds_home.first_to_score_odds))
+                        print('{: >35} {: >21} {: >3} Odds {} {: >21} {: >3} Odds {}'.format('',away_scorer[0],away_scorer[1],away_first_to_score_odds,home_scorer[0],home_scorer[1], home_first_to_score_odds))
 
 
                 print('\n')
