@@ -2,7 +2,7 @@
 from requests import get
 from datetime import datetime,timedelta,date
 from operator import itemgetter
-import sys,json,os,argparse
+import sys,json,os,argparse,pytz
 
 from django.core.management.base import BaseCommand, CommandError
 from players.models import Player
@@ -79,8 +79,9 @@ class Command(BaseCommand):
 
 
         #checking what day is today to know what games have been played
-        TODAY = datetime.today()
         TODAY_UTC = datetime.utcnow()
+        eastern = pytz.timezone('US/Eastern')
+        TODAY = TODAY_UTC.astimezone(eastern)
 
 
         #scrolling through the games
@@ -195,7 +196,9 @@ class Command(BaseCommand):
 
             #looking at all plays after the tip-off
             for play in json_pbp["plays"][2:]:
-        
+                if play["personId"]=='':
+                    continue
+                
                 #first shooter
                 if shot==0 and play["eventMsgType"] in ["1","2","3"]:
                     shooter=play["personId"]
