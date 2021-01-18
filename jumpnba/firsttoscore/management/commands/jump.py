@@ -93,6 +93,7 @@ class Command(BaseCommand):
         s_scoring_tip_off=statistic('scored first after winning tip off','scored_first_after_winning_tip_off','tip_off_won',.2,.5)
         s_scored_first=statistic('scored first','scored_first','game_played',.3,.7)
         s_fouled_first=statistic('foul during first defence','foul_first_defence','game_played',.0,1.)
+        s_three_first=statistic('first shot three','first_shot_three','game_played',.0,1.)
     
     
         tot_games=0
@@ -115,7 +116,7 @@ class Command(BaseCommand):
         #one team using its teamId
         teams={el['teamId']:el for el in teams["league"]["standard"]}
 
-        team_stats={el:{'game_played':0,'tip_off_won':0,'scored_first_after_winning_tip_off':0,'missed_first_after_winning_tip_off':0,'scored_first':0,'foul_first_defence':0,'first_scorer':{},'first_shooter':{}} for el in teams}
+        team_stats={el:{'first_shot_three': 0, 'game_played':0,'tip_off_won':0,'scored_first_after_winning_tip_off':0,'missed_first_after_winning_tip_off':0,'scored_first':0,'foul_first_defence':0,'first_scorer':{},'first_shooter':{}} for el in teams}
 
         #_____________________________________________________________
         #get players json. Download it once, and save it locally.
@@ -289,6 +290,8 @@ class Command(BaseCommand):
                     #and change the switch that somebody scored
                     shooting_team=play["teamId"]
                     shot=1
+                    if '3pt' in play['description']:
+                        team_stats[play["teamId"]]['first_shot_three']+=1
                 
                 if shot==1 and play["eventMsgType"] in ["1","2","3"] and play["teamId"]!= shooting_team:
                     shooter=play["personId"]
@@ -299,6 +302,8 @@ class Command(BaseCommand):
                     if play["isScoreChange"]==1:
                         team_stats[play["teamId"]]['first_shooter'][shooter][0]+=1
                     shot=2
+                    if '3pt' in play['description']:
+                        team_stats[play["teamId"]]['first_shot_three']+=1
             
                 #first team score
                 if score==0 and play["isScoreChange"]==1:
@@ -360,7 +365,7 @@ class Command(BaseCommand):
 			
    
             #looping through the statistic field we consider
-            for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first]:
+            for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first,s_three_first]:
                 #start list for output
                 out_stats=[stat.field_label,team_stats[_team][stat.value],team_stats[_team][stat.reference]]
                 self.printer(out_stats,percentage=1)
@@ -410,7 +415,7 @@ class Command(BaseCommand):
                 
                 #Printing team statistics for specific matchup
                 #looping through the statistic field we consider
-                for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first]:
+                for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first,s_three_first]:
                     #start list for output
                     out_stats=[stat.field_label]
                     
