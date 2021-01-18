@@ -17,7 +17,84 @@ class Command(BaseCommand):
                             required=True, type=int)
         parser.add_argument("--tomorrow", help="Show tomorrow games instead of today's", default=0, action='store_true')
 
+    def add_odds(self,player):
+        try:
+            player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
+            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+            first_scorer.number_of_times = away_scorer[1]
+            first_scorer.save()
+            # get the latest odds for this player to score the first basket
+            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+            away_first_to_score_odds = odds_away.first_to_score_odds
+        except:
+            away_first_to_score_odds = "N/A"
+        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
+
+    def print_out(self,_field, _value1, _value2, _color):
+        print('{: >35} {: >27} {: >27}'.format(_field,_color[0]+_value1,_color[1]+_value2))
+
+    def printer(self,_line,color=['\033[00m','\033[00m'],percentage=0,player_list=0):
+        value1=value2=''
+        field=_line[0]
+        
+        #team stats printer
+        if player_list==0:
+            number1=_line[1]
+            reference1=_line[2]
+            value1= '{:>2}/{:>3}'.format(number1,reference1)
+            if percentage==1 and reference1!=0:
+                value1= value1 +' ({: >5.1f}%)\033[00m'.format(100.*number1/reference1)
+            
+            if len(_line)>3:
+                number2=_line[3]
+                reference2=_line[4]
+                value2= '{:>2}/{:>3}'.format(number2,reference2)
+                if percentage==1 and reference2!=0:
+                    value2= value2 +' ({: >5.1f}%)\033[00m'.format(100.*number2/reference2)
+    
+            self.print_out(field, value1, value2, color)
+        
+        #player list printer
+        else:
+            pl_list1=_line[1]
+            if len(_line)>2:
+                pl_list2=_line[2]
+        
+            for i in range(len(pl_list1)):
+                if len(pl_list1[i])==3:
+                    value1='{: >17} {: >2}/{: >2}'.format(pl_list1[i][-1],pl_list1[i][0],pl_list1[i][1])
+                else:
+                    value1='{: >17} {: >2}'.format(pl_list1[i][-1],pl_list1[i][0])
+                if len(_line)>2:
+                    if len(pl_list2[i])==3:
+                        value2='{: >17} {: >2}/{: >2}'.format(pl_list2[i][-1],pl_list2[i][0],pl_list2[i][1])
+                    else:
+                        value2='{: >17} {: >2}'.format(pl_list2[i][-1],pl_list2[i][0])
+
+                if i==0:
+                    self.print_out(field, value1, value2, color)
+                else:
+                    self.print_out('', value1, value2, color)
+
+
+
     def handle(self, *args, **options):
+    
+        class statistic:
+            def __init__(self,_lab,_val,_ref,_badval,_goodval):
+                self.field_label=_lab
+                self.value=_val
+                self.reference=_ref
+                self.bad=_badval
+                self.good=_goodval
+                
+        
+        s_tip_off=statistic('tip-offs won','tip_off_won','game_played',.3,.7)
+        s_scoring_tip_off=statistic('scored first after winning tip off','scored_first_after_winning_tip_off','tip_off_won',.2,.5)
+        s_scored_first=statistic('scored first','scored_first','game_played',.3,.7)
+        s_fouled_first=statistic('foul during first defence','foul_first_defence','game_played',.0,1.)
+    
+    
         tot_games=0
         tot_score_first_possession=0
 
@@ -251,64 +328,48 @@ class Command(BaseCommand):
         #note that I'm changeing team_stats[_team]['first_scorer']
         #from dictionary to list
         for _team in team_stats:
-            team_stats[_team]['first_scorer'] = sorted([[team_stats[_team]['first_scorer'][el],el] for el in team_stats[_team]['first_scorer']], reverse=True)
-            team_stats[_team]['first_shooter'] = sorted([[team_stats[_team]['first_shooter'][el][0],team_stats[_team]['first_shooter'][el][1],el] for el in team_stats[_team]['first_shooter']], reverse=True,key=itemgetter(1,0))
+            tmp_list=[]
+            for el in team_stats[_team]['first_scorer']:
+                try:
+                    last_name=players[el]["lastName"]
+                except:
+                    last_name='??'
+                tmp_list.append([team_stats[_team]['first_scorer'][el],last_name])
+            team_stats[_team]['first_scorer'] = sorted(tmp_list, reverse=True)
+            
+            tmp_list=[]
+            for el in team_stats[_team]['first_shooter']:
+                try:
+                    last_name=players[el]["lastName"]
+                except:
+                    last_name='??'
+                tmp_list.append([team_stats[_team]['first_shooter'][el][0],team_stats[_team]['first_shooter'][el][1],last_name])
+            team_stats[_team]['first_shooter'] = sorted(tmp_list, reverse=True,key=itemgetter(1,0))
+            
 
 
 
         #End of collecting data
         #########
 
-        #just printin out what the script learnt for all the teams.
+        #just printing out what the script learnt for all the teams.
         print("---All teams---")
         for _team in team_stats:
             print('['+teams[_team]["fullName"]+']')
-            print("_"*61)
-            
-            tip_off= '%d/%d (%.1f%%)' %(team_stats[_team]['tip_off_won'],team_stats[_team]['game_played'],100.*team_stats[_team]['tip_off_won']/team_stats[_team]['game_played'])
-            print('{: >35} {: >25}'.format('tip-offs won:',tip_off))
-            
-            
-            if team_stats[_team]['tip_off_won'] !=0:
-                    scored_after_tip_off= '%d/%d (%.1f%%)' %(team_stats[_team]['scored_first_after_winning_tip_off'],team_stats[_team]['tip_off_won'],100.*team_stats[_team]['scored_first_after_winning_tip_off']/team_stats[_team]['tip_off_won'])
-            else:
-                    scored_after_tip_off= '%d/%d' %(team_stats[_team]['scored_first_after_winning_tip_off'],team_stats[_team]['tip_off_won'])
-            print('{: >35} {: >25}'.format('scored after winning the tip-off:',scored_after_tip_off))
+            print("_"*63)
+			
+   
+            #looping through the statistic field we consider
+            for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first]:
+                #start list for output
+                out_stats=[stat.field_label,team_stats[_team][stat.value],team_stats[_team][stat.reference]]
+                self.printer(out_stats,percentage=1)
+
+            for stat in ['first_shooter','first_scorer']:
+                print(' - '*21)
+                self.printer([stat,team_stats[_team][stat]],player_list=1)
 
 
-            scored_first= '%d/%d (%.1f%%)' %(team_stats[_team]['scored_first'],team_stats[_team]['game_played'],100.*team_stats[_team]['scored_first']/team_stats[_team]['game_played'])
-            print('{: >35} {: >25}'.format('scored first:',scored_first))
-
-
-            foul_first= '%d/%d (%.1f%%)' %(team_stats[_team]['foul_first_defence'],team_stats[_team]['game_played'],100.*team_stats[_team]['foul_first_defence']/team_stats[_team]['game_played'])
-            print('{: >35} {: >25}'.format('foul during first defence:',foul_first))
-                    
-
-
-            for i in range(len(team_stats[_team]['first_shooter'])):
-                try:
-                    shooter= [players[team_stats[_team]['first_shooter'][i][2]]["lastName"],team_stats[_team]['first_shooter'][i][0],team_stats[_team]['first_shooter'][i][1]]
-                except:
-                    shooter= ['??',team_stats[_team]['first_shooter'][i][0],team_stats[_team]['first_shooter'][i][1]]
-                if i==0:
-                    print('{: >35} {: >17} {: >3}/{: >3}'.format('First shooters:',shooter[0],shooter[1],shooter[2]))
-                else:
-                    print('{: >35} {: >17} {: >3}/{: >3}'.format('',shooter[0],shooter[1],shooter[2]))
-
-            for i in range(len(team_stats[_team]['first_scorer'])):
-                try:
-                    scorer= [players[team_stats[_team]['first_scorer'][i][1]]["lastName"],team_stats[_team]['first_scorer'][i][0]]
-                except:
-                    scorer= ['??',team_stats[_team]['first_scorer'][i][0]]
-                if i==0:
-                    print('{: >35} {: >21} {: >3}'.format('First scorers:',scorer[0],scorer[1]))
-                else:
-                    print('{: >35} {: >21} {: >3}'.format('',scorer[0],scorer[1]))
-                    
-                                    
-        #    print("\nFirst scorers:")
-        #	for _player in team_stats[_team]['first_scorer']:
-        #		print('-'+ players[_player]["lastName"]+' '+str(team_stats[_team]['first_scorer'][_player]))
             print('\n\n')
 
         print('Times that winning the tip-off resulted in the team scoring first:')
@@ -316,6 +377,8 @@ class Command(BaseCommand):
 
 
         print('\n\n')
+
+
 
         #Checking what games are played today
         if options["tomorrow"]:
@@ -343,87 +406,99 @@ class Command(BaseCommand):
                 print('{: >35} {: >38} {: >38}'.format(game_time,'['+teams[away_team]["fullName"]+']', '['+teams[home_team]["fullName"]+']'))
                 print("_"*113)
                 
-                away_tip_off= '%d/%d (%.1f%%)' %(team_stats[away_team]['tip_off_won'],team_stats[away_team]['game_played'],100.*team_stats[away_team]['tip_off_won']/team_stats[away_team]['game_played'])
-                home_tip_off= '%d/%d (%.1f%%)' %(team_stats[home_team]['tip_off_won'],team_stats[home_team]['game_played'],100.*team_stats[home_team]['tip_off_won']/team_stats[home_team]['game_played'])
-                print('{: >35} {: >38} {: >38}'.format('tip-offs won:',away_tip_off,home_tip_off))
+                playing_teams=[away_team,home_team]
                 
-                
-                if team_stats[away_team]['tip_off_won']!=0:
-                    away_scored_after_tip_off= '%d/%d (%.1f%%)' %(team_stats[away_team]['scored_first_after_winning_tip_off'],team_stats[away_team]['tip_off_won'],100.*team_stats[away_team]['scored_first_after_winning_tip_off']/team_stats[away_team]['tip_off_won'])
-                else:
-                    away_scored_after_tip_off= '%d/%d' %(team_stats[away_team]['scored_first_after_winning_tip_off'],team_stats[away_team]['tip_off_won'])
-                
-                if team_stats[home_team]['tip_off_won']!=0:
-                    home_scored_after_tip_off= '%d/%d (%.1f%%)' %(team_stats[home_team]['scored_first_after_winning_tip_off'],team_stats[home_team]['tip_off_won'],100.*team_stats[home_team]['scored_first_after_winning_tip_off']/team_stats[home_team]['tip_off_won'])
-                else:
-                    home_scored_after_tip_off= '%d/%d' %(team_stats[home_team]['scored_first_after_winning_tip_off'],team_stats[home_team]['tip_off_won'])
-                print('{: >35} {: >38} {: >38}'.format('scored after winning the tip-off:',away_scored_after_tip_off,home_scored_after_tip_off))
-                
+                #Printing team statistics for specific matchup
+                #looping through the statistic field we consider
+                for stat in [s_tip_off,s_scoring_tip_off,s_scored_first,s_fouled_first]:
+                    #start list for output
+                    out_stats=[stat.field_label]
+                    
+                    #start with neutral color
+                    color=['\033[00m','\033[00m']
+                    
+                    for i,_team in enumerate(playing_teams):
+                        #This is the conditions for a bad statistic -> red color
+                        if team_stats[_team][stat.value]/team_stats[_team][stat.reference]<stat.bad:
+                            color[i]='\033[41m' #red
+                        #This is the conditions for a bad statistic -> green color
+                        elif team_stats[_team][stat.value]/team_stats[_team][stat.reference]>=stat.good:
+                            color[i]='\033[42m' #green
+                        
+                        #expanding the output list with the correct values for away/home team
+                        out_stats.extend([team_stats[_team][stat.value],team_stats[_team][stat.reference]])
+                    
+                    #printing out
+                    self.printer(out_stats,color,percentage=1)
+            
 
-                away_scored_first= '%d/%d (%.1f%%)' %(team_stats[away_team]['scored_first'],team_stats[away_team]['game_played'],100.*team_stats[away_team]['scored_first']/team_stats[away_team]['game_played'])
-                home_scored_first= '%d/%d (%.1f%%)' %(team_stats[home_team]['scored_first'],team_stats[home_team]['game_played'],100.*team_stats[home_team]['scored_first']/team_stats[home_team]['game_played'])
-                print('{: >35} {: >38} {: >38}'.format('scored first:',away_scored_first,home_scored_first))
 
-
-                away_foul_first= '%d/%d (%.1f%%)' %(team_stats[away_team]['foul_first_defence'],team_stats[away_team]['game_played'],100.*team_stats[away_team]['foul_first_defence']/team_stats[away_team]['game_played'])
-                home_foul_first= '%d/%d (%.1f%%)' %(team_stats[home_team]['foul_first_defence'],team_stats[home_team]['game_played'],100.*team_stats[home_team]['foul_first_defence']/team_stats[home_team]['game_played'])
-                print('{: >35} {: >38} {: >38}'.format('foul during first defence:',away_foul_first,home_foul_first))
-                
-                
                 print(' '*21+' - '*31)
                 
-                away_n_shooters=len(team_stats[away_team]['first_shooter'])
-                home_n_shooters=len(team_stats[home_team]['first_shooter'])
+                for stat in ['first_shooter']:#,'first_scorer']:
+                    out_stats=[stat]
+                    
+                    n_players=[]
+                    
+                    #store how many players are in the list for each team.
+                    for i,_team in enumerate(playing_teams):
+                        n_players.append(len(team_stats[_team][stat]))
+                    
+                    #check if list of players is differnt length between home and away team.
+                    if n_players[0]!=n_players[1]:
+                        dif=max(n_players)-min(n_players)
+                        #getting which team has less players in their list
+                        less=playing_teams[n_players.index(min(n_players))]
+        
+                        #Adding a blank line to team with less players, for display purposes
+                        team_stats[less][stat].extend([['']*len(team_stats[less][stat][0])]*dif)
+                        #team_stats[less][stat]=team_stats[less][stat][:n_players[idx_more]]
+                    
+                    for i,_team in enumerate(playing_teams):
+                        out_stats.extend([team_stats[_team][stat]])
+                
+                    self.printer(out_stats,player_list=1)
 
-
-                if away_n_shooters>home_n_shooters:
-                    team_stats[home_team]['first_shooter'].extend(['','','']*away_n_shooters)
-                    team_stats[home_team]['first_shooter']=team_stats[home_team]['first_shooter'][:away_n_shooters]
-                elif home_n_shooters>away_n_shooters:
-                    team_stats[away_team]['first_shooter'].extend(['','','']*home_n_shooters)
-                    team_stats[away_team]['first_shooter']=team_stats[away_team]['first_shooter'][:home_n_shooters]
-
-
-                for i in range(max([away_n_shooters,home_n_shooters])):
-                    if team_stats[away_team]['first_shooter'][i]=='':
-                        away_shooter= ['','',' ','']
-                        away_first_to_score_odds_out= ''
-                    else:
-                        away_shooter= [players[team_stats[away_team]['first_shooter'][i][2]]["lastName"],team_stats[away_team]['first_shooter'][i][0],'/',team_stats[away_team]['first_shooter'][i][1]]
-                        try:
-                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_shooter'][i][2]]["firstName"], last_name=players[team_stats[away_team]['first_shooter'][i][2]]["lastName"], team_name=teams[away_team]["fullName"])
-                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-                            first_scorer.number_of_times = away_scorer[1]
-                            first_scorer.save()
-                            # get the latest odds for this player to score the first basket
-                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-                            away_first_to_score_odds = odds_away.first_to_score_odds
-                        except:
-                            away_first_to_score_odds = "N/A"
-                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
-
-                    if team_stats[home_team]['first_shooter'][i]=='':
-                        home_shooter= ['','',' ','']
-                        home_first_to_score_odds_out= ''
-                    else:
-                        home_shooter= [players[team_stats[home_team]['first_shooter'][i][2]]["lastName"],team_stats[home_team]['first_shooter'][i][0],'/',team_stats[home_team]['first_shooter'][i][1]]
-                        try:
-                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_shooter'][i][2]]["firstName"], last_name=players[team_stats[home_team]['first_shooter'][i][2]]["lastName"], team_name=teams[home_team]["fullName"])
-                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-                            first_scorer.number_of_times = home_scorer[1]
-                            first_scorer.save()
-                            # get the latest odds for this player to score the first basket
-                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-                            home_first_to_score_odds = odds_home.first_to_score_odds
-                        except:
-                            home_first_to_score_odds = "N/A"
-                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
-
-
-                    if i==0:
-                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('First shooters:', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
-                    else:
-                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
+#                for i in range(max(n_players)):
+#                    if team_stats[away_team]['first_shooter'][i]=='':
+#                        away_shooter= ['','',' ','']
+#                        away_first_to_score_odds_out= ''
+#                    else:
+#                        away_shooter= [team_stats[away_team]['first_shooter'][i][2],team_stats[away_team]['first_shooter'][i][0],'/',team_stats[away_team]['first_shooter'][i][1]]
+#                        try:
+#                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_shooter'][i][2]]["firstName"], last_name=team_stats[away_team]['first_shooter'][i][2], team_name=teams[away_team]["fullName"])
+#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+#                            first_scorer.number_of_times = away_scorer[1]
+#                            first_scorer.save()
+#                            # get the latest odds for this player to score the first basket
+#                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+#                            away_first_to_score_odds = odds_away.first_to_score_odds
+#                        except:
+#                            away_first_to_score_odds = "N/A"
+#                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
+#
+#                    if team_stats[home_team]['first_shooter'][i]=='':
+#                        home_shooter= ['','',' ','']
+#                        home_first_to_score_odds_out= ''
+#                    else:
+#                        home_shooter= [team_stats[home_team]['first_shooter'][i][2],team_stats[home_team]['first_shooter'][i][0],'/',team_stats[home_team]['first_shooter'][i][1]]
+#                        try:
+#                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_shooter'][i][2]]["firstName"], last_name=team_stats[home_team]['first_shooter'][i][2], team_name=teams[home_team]["fullName"])
+#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+#                            first_scorer.number_of_times = home_scorer[1]
+#                            first_scorer.save()
+#                            # get the latest odds for this player to score the first basket
+#                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+#                            home_first_to_score_odds = odds_home.first_to_score_odds
+#                        except:
+#                            home_first_to_score_odds = "N/A"
+#                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
+#
+#
+#                    if i==0:
+#                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('First shooters:', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
+#                    else:
+#                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
 
                 print(' '*21+' - '*31)
                 
@@ -446,7 +521,7 @@ class Command(BaseCommand):
                         away_scorer= ['','']
                         away_first_to_score_odds_out=''
                     else:
-                        away_scorer=[players[team_stats[away_team]['first_scorer'][i][1]]["lastName"],team_stats[away_team]['first_scorer'][i][0]]
+                        away_scorer=[team_stats[away_team]['first_scorer'][i][1],team_stats[away_team]['first_scorer'][i][0]]
                         try:
                             player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
                             first_scorer, created = FirstScorer.objects.get_or_create(player=player)
@@ -463,9 +538,9 @@ class Command(BaseCommand):
                         home_scorer= ['','']
                         home_first_to_score_odds_out=''
                     else:
-                        home_scorer= [players[team_stats[home_team]['first_scorer'][i][1]]["lastName"],team_stats[home_team]['first_scorer'][i][0]]
+                        home_scorer= [team_stats[home_team]['first_scorer'][i][1],team_stats[home_team]['first_scorer'][i][0]]
                         try:
-                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[home_team]['first_scorer'][i][1]]["lastName"], team_name=teams[home_team]["fullName"])
+                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_scorer'][i][1]]["firstName"], last_name=team_stats[home_team]['first_scorer'][i][1], team_name=teams[home_team]["fullName"])
                             first_scorer, created = FirstScorer.objects.get_or_create(player=player)
                             first_scorer.number_of_times = home_scorer[1]
                             first_scorer.save()
