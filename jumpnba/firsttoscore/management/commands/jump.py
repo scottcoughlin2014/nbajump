@@ -17,23 +17,23 @@ class Command(BaseCommand):
                             required=True, type=int)
         parser.add_argument("--tomorrow", help="Show tomorrow games instead of today's", default=0, action='store_true')
 
-    def add_odds(self,player):
+    def add_odds(self,_pl_first, _pl_last, _pl_team):
         try:
-            player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
-            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-            first_scorer.number_of_times = away_scorer[1]
-            first_scorer.save()
+            player = Player.objects.get(first_name=_pl_first, last_name=_pl_last, team_name=_pl_team)
+#            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+#            first_scorer.number_of_times = away_scorer[1]
+#            first_scorer.save()
             # get the latest odds for this player to score the first basket
-            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-            away_first_to_score_odds = odds_away.first_to_score_odds
+            odds = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+            out_odds = odds.first_to_score_odds
         except:
-            away_first_to_score_odds = "N/A"
-        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
+            out_odds = "N/A"
+        return ' Odds {: >4}'.format(out_odds)
 
-    def print_out(self,_field, _value1, _value2, _color):
-        print('{: >35} {: >27} {: >27}'.format(_field,_color[0]+_value1,_color[1]+_value2))
+    def print_out(self,_field, _value1, _value2,):
+        print('{: >35} {: >27} {: >27}'.format(_field,_value1,_value2))
 
-    def printer(self,_line,color=['\033[00m','\033[00m'],percentage=0,player_list=0):
+    def printer(self,_line,color=['\033[00m','\033[00m'],percentage=0,player_list=0,_players=None,add_odds=0,_teams=None):
         value1=value2=''
         field=_line[0]
         
@@ -41,18 +41,18 @@ class Command(BaseCommand):
         if player_list==0:
             number1=_line[1]
             reference1=_line[2]
-            value1= '{:>2}/{:>3}'.format(number1,reference1)
+            value1= ' '*23+color[0]+'{:>2}/{:>3}'.format(number1,reference1)
             if percentage==1 and reference1!=0:
                 value1= value1 +' ({: >5.1f}%)\033[00m'.format(100.*number1/reference1)
             
             if len(_line)>3:
                 number2=_line[3]
                 reference2=_line[4]
-                value2= '{:>2}/{:>3}'.format(number2,reference2)
+                value2= ' '*23+color[1]+'{:>2}/{:>3}'.format(number2,reference2)
                 if percentage==1 and reference2!=0:
                     value2= value2 +' ({: >5.1f}%)\033[00m'.format(100.*number2/reference2)
     
-            self.print_out(field, value1, value2, color)
+            self.print_out(field, value1, value2)
         
         #player list printer
         else:
@@ -61,20 +61,53 @@ class Command(BaseCommand):
                 pl_list2=_line[2]
         
             for i in range(len(pl_list1)):
+                pl_id1=pl_list1[i][-1]
+                try:
+                    last_name1=_players[pl_id1]["lastName"]
+                except:
+                    last_name1='??'
+                
                 if len(pl_list1[i])==3:
-                    value1='{: >17} {: >2}/{: >2}'.format(pl_list1[i][-1],pl_list1[i][0],pl_list1[i][1])
+                    value1='{: >22} {: >2}/{: >2}'.format(last_name1,pl_list1[i][0],pl_list1[i][1])
                 else:
-                    value1='{: >17} {: >2}'.format(pl_list1[i][-1],pl_list1[i][0])
+                    value1='{: >22} {: >5}'.format(last_name1,pl_list1[i][0])
+                
+                if pl_id1=='':
+                    value1=''
+                elif add_odds:
+                    pl_first=_players[pl_id1]["firstName"]
+                    pl_last=_players[pl_id1]["lastName"]
+                    pl_team=_teams[_players[pl_id1]["teamId"]]["fullName"]
+                    value1=value1+self.add_odds(pl_first,pl_last,pl_team)
+
+
+                
+                
                 if len(_line)>2:
+                    pl_id2=pl_list2[i][-1]
+                    try:
+                        last_name2=_players[pl_id2]["lastName"]
+                    except:
+                        last_name2='??'
+
                     if len(pl_list2[i])==3:
-                        value2='{: >17} {: >2}/{: >2}'.format(pl_list2[i][-1],pl_list2[i][0],pl_list2[i][1])
+                        value2='{: >22} {: >2}/{: >2}'.format(last_name2,pl_list2[i][0],pl_list2[i][1])
                     else:
-                        value2='{: >17} {: >2}'.format(pl_list2[i][-1],pl_list2[i][0])
+                        value2='{: >22} {: >5}'.format(last_name2,pl_list2[i][0])
+                    if pl_id2=='':
+                        value2=''
+                    elif add_odds:
+                        pl_first=_players[pl_id2]["firstName"]
+                        pl_last=_players[pl_id2]["lastName"]
+                        pl_team=_teams[_players[pl_id2]["teamId"]]["fullName"]
+                        value2=value2+self.add_odds(pl_first,pl_last,pl_team)
+                    
 
                 if i==0:
-                    self.print_out(field, value1, value2, color)
+                    self.print_out(field, value1, value2)
                 else:
-                    self.print_out('', value1, value2, color)
+                    self.print_out('', value1, value2)
+                
 
 
 
@@ -311,8 +344,8 @@ class Command(BaseCommand):
                     scorer=play["personId"]
                     #adding the scorer to the teams list of first scorers.
                     if scorer not in team_stats[play["teamId"]]['first_scorer']:
-                        team_stats[play["teamId"]]['first_scorer'][scorer]=0
-                    team_stats[play["teamId"]]['first_scorer'][scorer]+=1
+                        team_stats[play["teamId"]]['first_scorer'][scorer]=[0]
+                    team_stats[play["teamId"]]['first_scorer'][scorer][0]+=1
                     #tracking what team scored already
                     #and change the switch that somebody scored
                     scoring_team=play["teamId"]
@@ -323,35 +356,22 @@ class Command(BaseCommand):
                 if score==1 and play["isScoreChange"]==1 and play["teamId"]!= scoring_team:
                     scorer=play["personId"]
                     if scorer not in team_stats[play["teamId"]]['first_scorer']:
-                        team_stats[play["teamId"]]['first_scorer'][scorer]=0
-                    team_stats[play["teamId"]]['first_scorer'][scorer]+=1
+                        team_stats[play["teamId"]]['first_scorer'][scorer]=[0]
+                    team_stats[play["teamId"]]['first_scorer'][scorer][0]+=1
                     #both team scored, so I con exit the loop
                     break
 
 
-        #sort first scorers
-        #note that I'm changeing team_stats[_team]['first_scorer']
+        #sort first scorers and shooters
+        #note that I'm changing team_stats[_team]['first_scorer']
         #from dictionary to list
-        for _team in team_stats:
-            tmp_list=[]
-            for el in team_stats[_team]['first_scorer']:
-                try:
-                    last_name=players[el]["lastName"]
-                except:
-                    last_name='??'
-                tmp_list.append([team_stats[_team]['first_scorer'][el],last_name])
-            team_stats[_team]['first_scorer'] = sorted(tmp_list, reverse=True)
+        for _stat in ['first_scorer','first_shooter']:
+            for _team in team_stats:
+                tmp_list=[]
+                for el in team_stats[_team][_stat]:
+                    tmp_list.append([*team_stats[_team][_stat][el],el])
+                team_stats[_team][_stat] = sorted(tmp_list, reverse=True,key=itemgetter(-2,0))
             
-            tmp_list=[]
-            for el in team_stats[_team]['first_shooter']:
-                try:
-                    last_name=players[el]["lastName"]
-                except:
-                    last_name='??'
-                tmp_list.append([team_stats[_team]['first_shooter'][el][0],team_stats[_team]['first_shooter'][el][1],last_name])
-            team_stats[_team]['first_shooter'] = sorted(tmp_list, reverse=True,key=itemgetter(1,0))
-            
-
 
 
         #End of collecting data
@@ -372,7 +392,7 @@ class Command(BaseCommand):
 
             for stat in ['first_shooter','first_scorer']:
                 print(' - '*21)
-                self.printer([stat,team_stats[_team][stat]],player_list=1)
+                self.printer([stat,team_stats[_team][stat]],player_list=1,_players=players)
 
 
             print('\n\n')
@@ -440,7 +460,7 @@ class Command(BaseCommand):
 
                 print(' '*21+' - '*31)
                 
-                for stat in ['first_shooter']:#,'first_scorer']:
+                for stat in ['first_shooter','first_scorer']:
                     out_stats=[stat]
                     
                     n_players=[]
@@ -462,7 +482,13 @@ class Command(BaseCommand):
                     for i,_team in enumerate(playing_teams):
                         out_stats.extend([team_stats[_team][stat]])
                 
-                    self.printer(out_stats,player_list=1)
+                    self.printer(out_stats,player_list=1,_players=players,add_odds=1,_teams=teams)
+                    
+                    print(' '*21+' - '*31)
+                
+                print('\n')
+                
+                
 
 #                for i in range(max(n_players)):
 #                    if team_stats[away_team]['first_shooter'][i]=='':
@@ -505,61 +531,62 @@ class Command(BaseCommand):
 #                    else:
 #                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
 
-                print(' '*21+' - '*31)
-                
-                
-                
-                
-                away_n_scorers=len(team_stats[away_team]['first_scorer'])
-                home_n_scorers=len(team_stats[home_team]['first_scorer'])
-                
-                if away_n_scorers>home_n_scorers:
-                    team_stats[home_team]['first_scorer'].extend(['','']*away_n_scorers)
-                    team_stats[home_team]['first_scorer']=team_stats[home_team]['first_scorer'][:away_n_scorers]
-                elif home_n_scorers>away_n_scorers:
-                    team_stats[away_team]['first_scorer'].extend(['','']*home_n_scorers)
-                    team_stats[away_team]['first_scorer']=team_stats[away_team]['first_scorer'][:home_n_scorers]
+#                print(' '*21+' - '*31)
+#
+#
+#
+#
+#                away_n_scorers=len(team_stats[away_team]['first_scorer'])
+#                home_n_scorers=len(team_stats[home_team]['first_scorer'])
+#
+#                if away_n_scorers>home_n_scorers:
+#                    team_stats[home_team]['first_scorer'].extend(['','']*away_n_scorers)
+#                    team_stats[home_team]['first_scorer']=team_stats[home_team]['first_scorer'][:away_n_scorers]
+#                elif home_n_scorers>away_n_scorers:
+#                    team_stats[away_team]['first_scorer'].extend(['','']*home_n_scorers)
+#                    team_stats[away_team]['first_scorer']=team_stats[away_team]['first_scorer'][:home_n_scorers]
+#
+#
+#                for i in range(max([away_n_scorers,home_n_scorers])):
+#                    if team_stats[away_team]['first_scorer'][i]=='':
+#                        away_scorer= ['','']
+#                        away_first_to_score_odds_out=''
+#                    else:
+#                        away_scorer=[team_stats[away_team]['first_scorer'][i][1],team_stats[away_team]['first_scorer'][i][0]]
+#                        try:
+#                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
+#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+#                            first_scorer.number_of_times = away_scorer[1]
+#                            first_scorer.save()
+#                            # get the latest odds for this player to score the first basket
+#                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+#                            away_first_to_score_odds = odds_away.first_to_score_odds
+#                        except:
+#                            away_first_to_score_odds = "N/A"
+#                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
+#
+#                    if team_stats[home_team]['first_scorer'][i]=='':
+#                        home_scorer= ['','']
+#                        home_first_to_score_odds_out=''
+#                    else:
+#                        home_scorer= [team_stats[home_team]['first_scorer'][i][1],team_stats[home_team]['first_scorer'][i][0]]
+#                        try:
+#                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_scorer'][i][1]]["firstName"], last_name=team_stats[home_team]['first_scorer'][i][1], team_name=teams[home_team]["fullName"])
+#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
+#                            first_scorer.number_of_times = home_scorer[1]
+#                            first_scorer.save()
+#                            # get the latest odds for this player to score the first basket
+#                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
+#                            home_first_to_score_odds = odds_home.first_to_score_odds
+#                        except:
+#                            home_first_to_score_odds = "N/A"
+#                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
+#
+#                    if i==0:
+#                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('First scorers:',away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
+#                    else:
+#                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('', away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
+#
+#
+#                print('\n')
 
-                
-                for i in range(max([away_n_scorers,home_n_scorers])):
-                    if team_stats[away_team]['first_scorer'][i]=='':
-                        away_scorer= ['','']
-                        away_first_to_score_odds_out=''
-                    else:
-                        away_scorer=[team_stats[away_team]['first_scorer'][i][1],team_stats[away_team]['first_scorer'][i][0]]
-                        try:
-                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
-                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-                            first_scorer.number_of_times = away_scorer[1]
-                            first_scorer.save()
-                            # get the latest odds for this player to score the first basket
-                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-                            away_first_to_score_odds = odds_away.first_to_score_odds
-                        except:
-                            away_first_to_score_odds = "N/A"
-                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
-
-                    if team_stats[home_team]['first_scorer'][i]=='':
-                        home_scorer= ['','']
-                        home_first_to_score_odds_out=''
-                    else:
-                        home_scorer= [team_stats[home_team]['first_scorer'][i][1],team_stats[home_team]['first_scorer'][i][0]]
-                        try:
-                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_scorer'][i][1]]["firstName"], last_name=team_stats[home_team]['first_scorer'][i][1], team_name=teams[home_team]["fullName"])
-                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-                            first_scorer.number_of_times = home_scorer[1]
-                            first_scorer.save()
-                            # get the latest odds for this player to score the first basket
-                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-                            home_first_to_score_odds = odds_home.first_to_score_odds
-                        except:
-                            home_first_to_score_odds = "N/A"
-                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
-
-                    if i==0:
-                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('First scorers:',away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
-                    else:
-                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('', away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
-
-
-                print('\n')
