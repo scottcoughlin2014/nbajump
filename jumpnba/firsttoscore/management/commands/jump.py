@@ -73,7 +73,7 @@ class Command(BaseCommand):
                     value1='{: >22} {: >5}'.format(last_name1,pl_list1[i][0])
                 
                 if pl_id1=='':
-                    value1=''
+                    value1='{: >38}'.format('')
                 elif add_odds:
                     pl_first=_players[pl_id1]["firstName"]
                     pl_last=_players[pl_id1]["lastName"]
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                     else:
                         value2='{: >22} {: >5}'.format(last_name2,pl_list2[i][0])
                     if pl_id2=='':
-                        value2=''
+                        value2='{: >38}'.format('')
                     elif add_odds:
                         pl_first=_players[pl_id2]["firstName"]
                         pl_last=_players[pl_id2]["lastName"]
