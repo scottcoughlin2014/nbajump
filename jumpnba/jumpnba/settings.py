@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'players',
+    'teams',
     'firsttoscore',
+    'games',
     'django_extensions',
 ]
 
