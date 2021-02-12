@@ -1,0 +1,21 @@
+rm ./*/migrations/000*py
+rm db.sqlite3
+./manage.py makemigrations
+./manage.py migrate
+./manage.py update_schedule --year 2017
+./manage.py update_schedule --year 2018
+./manage.py update_schedule --year 2019
+./manage.py update_schedule --year 2020
+./manage.py start_teams --year 2017
+./manage.py start_teams --year 2018
+./manage.py start_teams --year 2019
+./manage.py start_teams --year 2020
+./manage.py update_players --year 2017
+./manage.py update_players --year 2018
+./manage.py update_players --year 2019
+./manage.py update_players --year 2020
+./manage.py patch
+./manage.py update_stats --year 2017
+./manage.py update_stats --year 2018
+./manage.py update_stats --year 2019
+./manage.py update_stats --year 2020

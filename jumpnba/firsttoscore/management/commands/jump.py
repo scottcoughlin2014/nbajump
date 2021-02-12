@@ -4,13 +4,13 @@ from datetime import datetime,timedelta,date
 from operator import itemgetter
 import sys,json,os,argparse,pytz
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
 from players.models import Player
 from firsttoscore.models import FanDuelOdds, FirstScorer
 
 class Command(BaseCommand):
-    help = 'Command to update or make new GRB for the bright.ciera.northwestern.edu webserver'
-
+    
     def add_arguments(self, parser):
         parser.add_argument("--year",
                             help="Year for NBA data",
@@ -190,7 +190,7 @@ class Command(BaseCommand):
 
 
         #checking what day is today to know what games have been played
-        TODAY_UTC = datetime.utcnow()
+        TODAY_UTC = timezone.now()
         eastern = pytz.timezone('US/Eastern')
         TODAY = TODAY_UTC.astimezone(eastern)
 
@@ -199,7 +199,7 @@ class Command(BaseCommand):
         for gameId in schedule:
             game=schedule[gameId]
             #getting time of the game, in UTC
-            game_time=datetime.strptime(game["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ')
+            game_time=pytz.utc.localize(datetime.strptime(game["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ'))
             
             #___________________________________________
             # game["seasonStageId"]==1 -> pre-season
@@ -428,7 +428,7 @@ class Command(BaseCommand):
                 home_team=game["hTeam"]["teamId"]
                 away_team=game["vTeam"]["teamId"]
                 print('\n')
-                print('{: >35} {: >38} {: >38}'.format(game_time,'['+teams[away_team]["fullName"]+']', '['+teams[home_team]["fullName"]+']'))
+                print('{: >35} {: >38} {: >38}'.format(game_time,'['+teams[away_team]["fullName"]+' - '+teams[away_team]["tricode"]+']', '['+teams[home_team]["fullName"]+' - '+teams[home_team]["tricode"]+']'))
                 print("_"*113)
                 
                 playing_teams=[away_team,home_team]
@@ -487,106 +487,5 @@ class Command(BaseCommand):
                     print(' '*21+' - '*31)
                 
                 print('\n')
-                
-                
 
-#                for i in range(max(n_players)):
-#                    if team_stats[away_team]['first_shooter'][i]=='':
-#                        away_shooter= ['','',' ','']
-#                        away_first_to_score_odds_out= ''
-#                    else:
-#                        away_shooter= [team_stats[away_team]['first_shooter'][i][2],team_stats[away_team]['first_shooter'][i][0],'/',team_stats[away_team]['first_shooter'][i][1]]
-#                        try:
-#                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_shooter'][i][2]]["firstName"], last_name=team_stats[away_team]['first_shooter'][i][2], team_name=teams[away_team]["fullName"])
-#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-#                            first_scorer.number_of_times = away_scorer[1]
-#                            first_scorer.save()
-#                            # get the latest odds for this player to score the first basket
-#                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-#                            away_first_to_score_odds = odds_away.first_to_score_odds
-#                        except:
-#                            away_first_to_score_odds = "N/A"
-#                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
-#
-#                    if team_stats[home_team]['first_shooter'][i]=='':
-#                        home_shooter= ['','',' ','']
-#                        home_first_to_score_odds_out= ''
-#                    else:
-#                        home_shooter= [team_stats[home_team]['first_shooter'][i][2],team_stats[home_team]['first_shooter'][i][0],'/',team_stats[home_team]['first_shooter'][i][1]]
-#                        try:
-#                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_shooter'][i][2]]["firstName"], last_name=team_stats[home_team]['first_shooter'][i][2], team_name=teams[home_team]["fullName"])
-#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-#                            first_scorer.number_of_times = home_scorer[1]
-#                            first_scorer.save()
-#                            # get the latest odds for this player to score the first basket
-#                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-#                            home_first_to_score_odds = odds_home.first_to_score_odds
-#                        except:
-#                            home_first_to_score_odds = "N/A"
-#                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
-#
-#
-#                    if i==0:
-#                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('First shooters:', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
-#                    else:
-#                        print('{: >35} {: >18} {: >2}{}{: >2}  {: >10} {: >18} {: >2}{}{: >2}  {: >10}'.format('', away_shooter[0],away_shooter[1],away_shooter[2],away_shooter[3],away_first_to_score_odds_out,home_shooter[0],home_shooter[1],home_shooter[2],home_shooter[3],home_first_to_score_odds_out))
-
-#                print(' '*21+' - '*31)
-#
-#
-#
-#
-#                away_n_scorers=len(team_stats[away_team]['first_scorer'])
-#                home_n_scorers=len(team_stats[home_team]['first_scorer'])
-#
-#                if away_n_scorers>home_n_scorers:
-#                    team_stats[home_team]['first_scorer'].extend(['','']*away_n_scorers)
-#                    team_stats[home_team]['first_scorer']=team_stats[home_team]['first_scorer'][:away_n_scorers]
-#                elif home_n_scorers>away_n_scorers:
-#                    team_stats[away_team]['first_scorer'].extend(['','']*home_n_scorers)
-#                    team_stats[away_team]['first_scorer']=team_stats[away_team]['first_scorer'][:home_n_scorers]
-#
-#
-#                for i in range(max([away_n_scorers,home_n_scorers])):
-#                    if team_stats[away_team]['first_scorer'][i]=='':
-#                        away_scorer= ['','']
-#                        away_first_to_score_odds_out=''
-#                    else:
-#                        away_scorer=[team_stats[away_team]['first_scorer'][i][1],team_stats[away_team]['first_scorer'][i][0]]
-#                        try:
-#                            player = Player.objects.get(first_name=players[team_stats[away_team]['first_scorer'][i][1]]["firstName"], last_name=players[team_stats[away_team]['first_scorer'][i][1]]["lastName"], team_name=teams[away_team]["fullName"])
-#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-#                            first_scorer.number_of_times = away_scorer[1]
-#                            first_scorer.save()
-#                            # get the latest odds for this player to score the first basket
-#                            odds_away = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-#                            away_first_to_score_odds = odds_away.first_to_score_odds
-#                        except:
-#                            away_first_to_score_odds = "N/A"
-#                        away_first_to_score_odds_out= 'Odds {: >4}'.format(away_first_to_score_odds)
-#
-#                    if team_stats[home_team]['first_scorer'][i]=='':
-#                        home_scorer= ['','']
-#                        home_first_to_score_odds_out=''
-#                    else:
-#                        home_scorer= [team_stats[home_team]['first_scorer'][i][1],team_stats[home_team]['first_scorer'][i][0]]
-#                        try:
-#                            player = Player.objects.get(first_name=players[team_stats[home_team]['first_scorer'][i][1]]["firstName"], last_name=team_stats[home_team]['first_scorer'][i][1], team_name=teams[home_team]["fullName"])
-#                            first_scorer, created = FirstScorer.objects.get_or_create(player=player)
-#                            first_scorer.number_of_times = home_scorer[1]
-#                            first_scorer.save()
-#                            # get the latest odds for this player to score the first basket
-#                            odds_home = FanDuelOdds.objects.filter(player=player, date=date.today()).last()
-#                            home_first_to_score_odds = odds_home.first_to_score_odds
-#                        except:
-#                            home_first_to_score_odds = "N/A"
-#                        home_first_to_score_odds_out= 'Odds {: >4}'.format(home_first_to_score_odds)
-#
-#                    if i==0:
-#                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('First scorers:',away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
-#                    else:
-#                        print('{: >35} {: >21} {: >2}  {: >10} {: >21} {: >2}  {: >10}'.format('', away_scorer[0],away_scorer[1],away_first_to_score_odds_out,home_scorer[0],home_scorer[1], home_first_to_score_odds_out))
-#
-#
-#                print('\n')
 
