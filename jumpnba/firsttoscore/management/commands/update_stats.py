@@ -268,24 +268,10 @@ class Command(BaseCommand):
             if (game.game_utc > TODAY_UTC) or game.stage==1 or game.stage==3:
                 continue
 
-            #_____________________________________________________________
-            #fetching the play-by-play of the first period of the game
-            #the number '1' at the end of the url refer to the period
-            #if you want more than the first period, change that
-
-            #Download the json once, and save it locally.
-            #if the script doesn't find it, it will download it again
-            pbp_url='http://data.nba.net/prod/v1/{0}/{1}_pbp_1.json'.format(game.game_date,game.game_id)
-            pbp_json=get(pbp_url).json()
-
-            #I found a json with no plays. Perhaps a postponed game? Need to investigate.
-            if len(pbp_json["plays"])==0:
-                continue
-
             #keeping track of which teams are playing
             #if the game has already been counted, skip
     
-    
+            
             #away_team
             t=Team.objects.get(team_id=game.a_team)
             if game.game_id in t.stats[year]['games_played']:
@@ -309,6 +295,19 @@ class Command(BaseCommand):
 
             print('{0} - {1} (id: {2})'.format(game.game_date,game.tricode,game.game_id))
 
+            #_____________________________________________________________
+            #fetching the play-by-play of the first period of the game
+            #the number '1' at the end of the url refer to the period
+            #if you want more than the first period, change that
+
+            #Download the json once, and save it locally.
+            #if the script doesn't find it, it will download it again
+            pbp_url='http://data.nba.net/prod/v1/{0}/{1}_pbp_1.json'.format(game.game_date,game.game_id)
+            pbp_json=get(pbp_url).json()
+
+            #I found a json with no plays. Perhaps a postponed game? Need to investigate.
+            if len(pbp_json["plays"])==0:
+                continue
 
             #find and record the starters for the game
             pl_start=self.find_starters(pbp_json,year)
@@ -411,7 +410,7 @@ class Command(BaseCommand):
                         tip_off_winning_player=[int(jumpers[_t][0]),p.last_name]
 #
 #            jumpers=list(set(jumpers))
-            print(jumpers)
+
             print('Jump ball: {0} (id: {1}) vs {2} (id: {3})'.format(Player.objects.get(nba_id=jumpers[game.a_team][0]).last_name, jumpers[game.a_team][0], Player.objects.get(nba_id=jumpers[game.h_team][0]).last_name,jumpers[game.h_team][0]))
 
             game.jumpers.append(jumpers[game.a_team][0])

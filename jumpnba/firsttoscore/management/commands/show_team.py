@@ -74,7 +74,7 @@ class Command(BaseCommand):
         for _y in year_list:
             print("Year {0}:".format(_y))
             d=t.stats[str(_y)]
-            gp=len(d["games_played"])
+            gp=len(d['starters'])
             #self.print_out("- Games played:",gp)
             
             self.printer(['- Tip offs won:',d['tip_off_won'],gp],percentage=1) #,.3,.7)

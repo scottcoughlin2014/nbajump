@@ -92,8 +92,8 @@ class Command(BaseCommand):
             print("_"*113)
             h_d=h_team.stats[str(options["year"])]
             a_d=a_team.stats[str(options["year"])]
-            h_gp=len(h_d["games_played"])
-            a_gp=len(a_d["games_played"])
+            h_gp=len(h_d['starters'])
+            a_gp=len(a_d['starters'])
             self.printer(['Tip offs won:',a_d['tip_off_won'],a_gp, h_d['tip_off_won'],h_gp],percentage=1) #,.3,.7)
             self.printer(['Scored first after winning tip off:',a_d['scored_first_after_winning_tip_off'],a_d['tip_off_won'], h_d['scored_first_after_winning_tip_off'],h_d['tip_off_won']],percentage=1) #.2,.5)
             self.printer(['Scored first:',a_d['scored_first'],a_gp, h_d['scored_first'],h_gp],percentage=1)
