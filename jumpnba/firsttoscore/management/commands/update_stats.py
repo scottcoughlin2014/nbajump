@@ -294,7 +294,7 @@ def update_stats(_year):
             continue
 
         #find and record the starters for the game
-        pl_start=self.find_starters(pbp_json,year)
+        pl_start=find_starters(pbp_json,year)
         for _team in pl_start:
             t=Team.objects.get(team_id=_team)
             t.stats[year]['starters'].append(pl_start[_team])
@@ -328,7 +328,7 @@ def update_stats(_year):
                 t.stats[year]['tip_off_won']+=1
                 t.last_update = TODAY_UTC
                 t.save()
-                jumpers=self.find_jumpers(tip_off,pl_start,year)
+                jumpers=find_jumpers(tip_off,pl_start,year)
 #                    if len(jumpers)<2:
 #                        if tip_off["personId"] not in jumpers:
 #                            jumpers.append(int(tip_off["personId"]))
@@ -366,7 +366,7 @@ def update_stats(_year):
                             t.stats[year]['tip_off_won']+=1
                             t.last_update = TODAY_UTC
                             t.save()
-                            id_jumper=self.most_probable_jumper(pl_start[_team])
+                            id_jumper=most_probable_jumper(pl_start[_team])
                             p=Player.objects.get(nba_id=id_jumper)
                             p.jumps_won+=1
                             p.last_update = TODAY_UTC
@@ -379,7 +379,7 @@ def update_stats(_year):
     
         for _t in jumpers:
             if len(jumpers[_t])==0:
-                jumpers[_t].append(self.most_probable_jumper(pl_start[_t]))
+                jumpers[_t].append(most_probable_jumper(pl_start[_t]))
                 if int(_t)==int(pbp_json["plays"][1]["teamId"]):
                     t=Team.objects.get(team_id=_t)
                     tip_off_winning_team=t.full_name
@@ -435,7 +435,7 @@ def update_stats(_year):
         elo1_in=Player.objects.get(nba_id=jumpers[game.a_team][0]).elo_score
         elo2_in=Player.objects.get(nba_id=jumpers[game.h_team][0]).elo_score
 
-        elo1_fi,elo2_fi=self.updateELO(jumpers[game.a_team][0],jumpers[game.h_team][0],tip_off_winning_player[0])
+        elo1_fi,elo2_fi=updateELO(jumpers[game.a_team][0],jumpers[game.h_team][0],tip_off_winning_player[0])
         
         print('ELO score {} (id: {}) : {:.2f} --> {:.2f}'.format(Player.objects.get(nba_id=jumpers[game.a_team][0]).last_name,jumpers[game.a_team][0],elo1_in,elo1_fi))
         print('ELO score {} (id: {}) : {:.2f} --> {:.2f}'.format(Player.objects.get(nba_id=jumpers[game.h_team][0]).last_name,jumpers[game.h_team][0],elo2_in,elo2_fi))
