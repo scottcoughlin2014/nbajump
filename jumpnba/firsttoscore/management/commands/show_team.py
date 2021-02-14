@@ -91,6 +91,15 @@ class Command(BaseCommand):
 #            for i,el in enumerate(d['jumpers']):
 #                print(i,el)
 
+            print('\nLast 5 games:')
+            for _s in d['jumpers'][:-6:-1]:
+                p=Player.objects.get(nba_id=_s[0])
+                if _s[1]==1:
+                    made='won'
+                else:
+                    made='lost'
+                print('- {} ({})'.format(p.last_name,made))
+
             print('\n'+' - '*21)
             print('First shooters')
             sh={}
@@ -107,6 +116,15 @@ class Command(BaseCommand):
                 start=self.starters(_s[0],d['starters'])
                 print('- {} {}/{} over {} games started.'.format(p.last_name,_s[2],_s[1],start))
             
+            print('\nLast 5 games:')
+            for _s in d['first_shooter'][:-6:-1]:
+                p=Player.objects.get(nba_id=_s[0])
+                if _s[1]==1:
+                    made='made'
+                else:
+                    made='missed'
+                print('- {} ({})'.format(p.last_name,made))
+        
             print('\n'+' - '*21)
             print('First scorers')
             sc={}
@@ -121,6 +139,11 @@ class Command(BaseCommand):
                 p=Player.objects.get(nba_id=_s[0])
                 start=self.starters(_s[0],d['starters'])
                 print('- {} {} over {} games started.'.format(p.last_name,_s[1],start))
+        
+            print('\nLast 5 games:')
+            for _s in d['first_scorer'][:-6:-1]:
+                p=Player.objects.get(nba_id=_s)
+                print('- {}'.format(p.last_name))
         
             print('\n'+' - '*21)
 

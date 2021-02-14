@@ -8,17 +8,15 @@ from django.core.management.base import BaseCommand, CommandError
 from players.models import Player
 from teams.models import Team
 from games.models import Game
+from firsttoscore.management.commands.update_stats import compareRating
+from firsttoscore.management.commands.update_stats import update_stats
+from players.management.commands.update_players import update_players
+from games.management.commands.update_schedule import update_schedule
+
+
 
 class Command(BaseCommand):
     help = 'Show matchups'
-
-    def compareRating(self,_player_elo, _opponent_elo):
-        """
-        Compares the two ratings of the this player and the opponent.
-        @param opponent - the player to compare against.
-        @returns - The expected score between the two players.
-        """
-        return ( 1+10**( ( _opponent_elo-_player_elo )/400.0 ) ) ** -1
 
     def add_arguments(self, parser):
         parser.add_argument("--year",
@@ -26,6 +24,35 @@ class Command(BaseCommand):
                             required=True, type=int)
                             
         parser.add_argument("--tomorrow", help="Show tomorrow games instead of today's", default=0, action='store_true')
+
+    def scoring_first_probability(self,pj,oe_1,oe_2):
+        #team 1 has pj_1 probability to win the tip off and then oe_1 to score.
+        #so the probability to win the tip-off and scoring immediately after is
+        #p=pj_1*oe_1
+        #the losing team will have a probability to score on their first posession if
+        #first the other team miss (1-oe_1) and then they score (oe_2)
+        #p=pj_1*(1-oe_1)*(oe_2)
+        
+        
+        team_1_probability=0
+        team_2_probability=0
+        #k-th posession for the team which won the tip-off
+        #j-th posession for the team which won the tip-off
+        k=0
+        j=0
+        while 1:
+            if k==j:
+                team_1_probability= team_1_probability + pj * (1-oe_1)**k * (1-oe_2)**j * oe_1
+                team_2_probability= team_2_probability + (1-pj) * (1-oe_2)**k * (1-oe_1)**j * oe_2
+                k+=1
+            else:
+                team_2_probability= team_2_probability + pj * (1-oe_1)**k * (1-oe_2)**j * oe_2
+                team_1_probability= team_1_probability + (1-pj) * (1-oe_2)**k * (1-oe_1)**j * oe_1
+                j+=1
+
+            if 1.-(team_1_probability+team_2_probability)<1e-7:
+                break
+        return team_1_probability
 
     def print_out(self,_field, _value1, _value2):
         print('{: >35} {: >27} {: >27}'.format(_field,_value1,_value2))
@@ -54,6 +81,16 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
+        
+        print("Looking for player updates")
+        update_players(options["year"])
+        
+        print("Looking for schedule updates")
+        update_schedule(options["year"])
+        
+        print("Looking for game updates")
+        update_stats(options["year"])
+    
         #Checking what games are played today
         
         TODAY_UTC = timezone.now()
@@ -100,6 +137,20 @@ class Command(BaseCommand):
             self.printer(['First shot three:',a_d['first_shot_three'],a_gp, h_d['first_shot_three'],h_gp],percentage=1)
             self.printer(['Foul during first defence:',a_d['foul_first_defence'],a_gp, h_d['foul_first_defence'],h_gp],percentage=1)
 
+            total_shots=[0,0]
+            total_shots_made=[0,0]
+            for i,d in enumerate([a_d,h_d]):
+                for _s in d['first_shooter']:
+                    total_shots[i]+=1
+                    total_shots_made[i]+=_s[1]
+        
+            self.printer(['Offensive efficiency:',total_shots_made[0],total_shots[0],total_shots_made[1],total_shots[1]],percentage=1)
+            a_offensive_efficiency=total_shots_made[0]/total_shots[0]
+            h_offensive_efficiency=total_shots_made[1]/total_shots[1]
+            
+            #print('{: >35} {: >28.2f}% {: >45.2f}%'.format('Offensive efficiency:',a_offensive_efficiency*100.,h_offensive_efficiency*100.))
+            
+            
             print('\n'+' - '*21)
             out=[[],[]]
             for i,d in enumerate([a_d,h_d]):
@@ -129,10 +180,14 @@ class Command(BaseCommand):
             print('\n')
             for aj in out[0]:
                 for hj in out[1]:
-                    p=self.compareRating(aj[1],hj[1])*100
-                    value1='{} has {:.2f}% of probability of beat {}.'.format(aj[0],p,hj[0])
-                    self.print_out('', value1, '')
-
+                    p=compareRating(aj[1],hj[1])
+                    scoring_first=self.scoring_first_probability(p,a_offensive_efficiency,h_offensive_efficiency)
+                    if scoring_first<0.5:
+                        am_p=100.*(1.-scoring_first)/scoring_first
+                    else:
+                        am_p=-100.*scoring_first/(1.-scoring_first)
+                    value1='{} has {:.2f}% of probability of beat {}. {} have a probability of {:.2f}% ({:+.0f}) to score first.'.format(aj[0],p*100,hj[0],a_team_name,scoring_first*100,am_p)
+                    print(value1)
 
 
             
@@ -146,6 +201,7 @@ class Command(BaseCommand):
                         sh[i][_s[0]]=[_s[0],0,0]
                     sh[i][_s[0]][1]+=1
                     sh[i][_s[0]][2]+=_s[1]
+                    
 
             sh[0]=sorted([sh[0][el] for el in sh[0]], reverse=True,key=itemgetter(2,1))
             sh[1]=sorted([sh[1][el] for el in sh[1]], reverse=True,key=itemgetter(2,1))
