@@ -15,7 +15,7 @@ def compareRating(_player_elo, _opponent_elo):
     """
     return ( 1+10**( ( _opponent_elo-_player_elo )/400.0 ) ) ** -1
 
-def updateELO(self, _id1, _id2, _winner_id):
+def updateELO(_id1, _id2, _winner_id):
 
     player1 = Player.objects.get(nba_id=_id1)
     player2 = Player.objects.get(nba_id=_id2)
