@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
-from games.models import Game
+from firsttoscore.models import Game
 from datetime import datetime
 from requests import get
-import sys,json,pytz
+import json,pytz
 
 def update_schedule(_year):
     #_____________________________________________________________

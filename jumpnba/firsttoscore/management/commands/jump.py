@@ -6,8 +6,8 @@ import sys,json,os,argparse,pytz
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
-from players.models import Player
-from firsttoscore.models import FanDuelOdds, FirstScorer
+#from players.models import Player
+#from firsttoscore.models import FanDuelOdds, FirstScorer
 
 class Command(BaseCommand):
     

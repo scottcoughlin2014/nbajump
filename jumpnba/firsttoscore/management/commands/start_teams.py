@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
-from teams.models import Team
+from firsttoscore.models import Team
 from django.utils import timezone
 from requests import get
-import sys,json
+import json
 
 class Command(BaseCommand):
     help = 'start teams database'

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from operator import itemgetter
-import sys,json,os,argparse
+import os
 
 from django.core.management.base import BaseCommand, CommandError
-from players.models import Player
-from teams.models import Team
+from firsttoscore.models import Player
+from firsttoscore.models import Team
 
 class Command(BaseCommand):
     help = 'Show info about team'
@@ -115,7 +115,7 @@ class Command(BaseCommand):
                 p=Player.objects.get(nba_id=_s[0])
                 start=self.starters(_s[0],d['starters'])
                 print('- {} {}/{} over {} games started.'.format(p.last_name,_s[2],_s[1],start))
-            
+        
             print('\nLast 5 games:')
             for _s in d['first_shooter'][:-6:-1]:
                 p=Player.objects.get(nba_id=_s[0])

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 from requests import get
-import sys,json,os,argparse
+import json,argparse,sys
 from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
-from players.models import Player
-from teams.models import Team
-from games.models import Game
+from firsttoscore.models import Player
+from firsttoscore.models import Team
+from firsttoscore.models import Game
 
 def compareRating(_player_elo, _opponent_elo):
     """
@@ -257,22 +257,31 @@ def update_stats(_year):
 
 
         #away_team
-        t=Team.objects.get(team_id=game.a_team)
-        if game.game_id in t.stats[year]['games_played']:
-            #game already recorded
-            continue
-        t.stats[year]['games_played'].append(game.game_id)
-        t.last_update = TODAY_UTC
-        t.save()
+        at=Team.objects.get(team_id=game.a_team)
+        #last game recorded
+        if len(at.stats[year]['games_played'])>0:
+            last_game=at.stats[year]['games_played'][-1]
+            last_game_played= schedule.get(game_id=last_game).game_utc
+            if last_game_played>=game.game_utc:
+                continue
+#        if game.game_id in t.stats[year]['games_played']:
+#            #game already recorded
+#            continue
+
 
         #home_team
-        t=Team.objects.get(team_id=game.h_team)
-        if game.game_id in t.stats[year]['games_played']:
-            #game already recorded
-            continue
-        t.stats[year]['games_played'].append(game.game_id)
-        t.last_update = TODAY_UTC
-        t.save()
+        ht=Team.objects.get(team_id=game.h_team)
+        if len(ht.stats[year]['games_played'])>0:
+            last_game=ht.stats[year]['games_played'][-1]
+            last_game_played= schedule.get(game_id=last_game).game_utc
+            if last_game_played>=game.game_utc:
+                continue
+        at.stats[year]['games_played'].append(game.game_id)
+        at.last_update = TODAY_UTC
+        at.save()
+        ht.stats[year]['games_played'].append(game.game_id)
+        ht.last_update = TODAY_UTC
+        ht.save()
 
 
         print('\n')
@@ -291,6 +300,8 @@ def update_stats(_year):
 
         #I found a json with no plays. Perhaps a postponed game? Need to investigate.
         if len(pbp_json["plays"])==0:
+            Team.objects.get(team_id=game.a_team).stats[year]['games_played'].pop()
+            Team.objects.get(team_id=game.h_team).stats[year]['games_played'].pop()
             continue
 
         #find and record the starters for the game

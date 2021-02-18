@@ -1,6 +1,5 @@
-import sys,os
 from django.core.management.base import BaseCommand, CommandError
-from players.models import Player
+from firsttoscore.models import Player
 from operator import itemgetter
 
 

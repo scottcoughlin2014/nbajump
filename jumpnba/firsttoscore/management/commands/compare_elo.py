@@ -1,6 +1,5 @@
-import sys,os,argparse
 from django.core.management.base import BaseCommand, CommandError
-from players.models import Player
+from firsttoscore.models import Player
 from firsttoscore.management.commands.update_stats import compareRating
 
 
@@ -30,8 +29,8 @@ class Command(BaseCommand):
                 elos.append(p[0])
 
         print('\n')
-        print('{} {} - elo: {:.2f}'.format(elos[0].first_name,elos[0].last_name,elos[0].elo_score))
-        print('{} {} - elo: {:.2f}'.format(elos[1].first_name,elos[1].last_name,elos[1].elo_score))
+        print('{} {} - elo: {:.2f} ({} jumps)'.format(elos[0].first_name,elos[0].last_name,elos[0].elo_score,elos[0].jumps_jumped))
+        print('{} {} - elo: {:.2f} ({} jumps)'.format(elos[1].first_name,elos[1].last_name,elos[1].elo_score,elos[1].jumps_jumped))
 
         prob=compareRating(elos[0].elo_score,elos[1].elo_score)*100
 

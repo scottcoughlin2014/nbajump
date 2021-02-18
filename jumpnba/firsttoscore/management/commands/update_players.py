@@ -1,9 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
-from django.db.models import Max
-from players.models import Player
+from firsttoscore.models import Player
 from requests import get
-import sys
 
 def update_players(_year):
     no_update=1
