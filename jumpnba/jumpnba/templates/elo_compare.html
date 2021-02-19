@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function()
+      {
+        var $teamvar_1=$("#teamddl1");
+            $playervar_1=$("#playerddl1");
+            
+            $options_1=$playervar_1.find('option');
+            $teamvar_1.on('change',function()
+            {
+              $playervar_1.html($options_1.filter('[data-team="'+this.value+'"]'))
+              }).trigger('change');
+      });
+    </script>
+    <script>
+      $(document).ready(function()
+      {
+        var $teamvar_2=$("#teamddl2");
+            $playervar_2=$("#playerddl2");
+            
+            $options_2=$playervar_2.find('option');
+            $teamvar_2.on('change',function()
+            {
+              $playervar_2.html($options_2.filter('[data-team="'+this.value+'"]'))
+              }).trigger('change');
+      });
+    </script>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
+</head>
+
+<body>
+<form action="elo_compare" method="get">
+  <select id=teamddl1>
+  	<option disabled selected="true"> -- Team 1 -- </option>
+  	{% for t in teams_sel %}
+  	<option value="{{t.team_id}}"> {{t.full_name}} </option>
+  	{% endfor %}
+  </select>
+  <select id=playerddl1 name="playerddl1">
+  	<option disabled selected="true"> -- Player 1 -- </option>
+  	{% for p in players_sel %}
+  	<option value="{{p.nba_id}}" data-team="{{p.team_id}}"> {{p.full_name}} </option>
+  	{% endfor %}
+  </select>
+  <br>
+  <select id=teamddl2>
+  	<option disabled selected="true"> -- Team 2 -- </option>
+  	{% for t in teams_sel %}
+  	<option value="{{t.team_id}}"> {{t.full_name}} </option>
+  	{% endfor %}
+  </select>
+  <select  id=playerddl2 name="playerddl2">
+  	<option disabled selected="true"> -- Player 2 -- </option>
+  	{% for p in players_sel %}
+  	<option value="{{p.nba_id}}" data-team="{{p.team_id}}"> {{p.full_name}} </option>
+  	{% endfor %}
+  </select>
+<br>
+<input type="submit" value="Compare">
+</form>
+
+{% if prob %}
+
+<hr>
+
+{% for p in elos %}
+{{p.full_name}} - elo: {{p.elo}} ({{p.jumps}})<br>
+{% endfor %}
+
+<hr>
+
+{{p1}} has {{prob}}% of probability of beating {{p2}}.
+
+{% endif %}
+</body>
+</html>
+{% endblock %}

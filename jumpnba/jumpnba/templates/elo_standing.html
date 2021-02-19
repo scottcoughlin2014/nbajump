@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
+</head>
+
+<body>
+<table border="1">
+  <tr>
+    <th>Player</th>
+    <th>Elo score</th>
+    <th>Jumps</th>
+  </tr>
+  {% for p in list %}
+  <tr>
+    <td>{{p.first}} {{p.last}}</td>
+    <td>{{p.elo}}</td>
+    <td>{{p.jumps}}</td>
+  </tr>
+  {% endfor %}
+</table>
+</body>
+</html>
+{% endblock %}

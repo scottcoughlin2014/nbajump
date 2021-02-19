@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
+<style>
+.nav-tabs
+ {
+   border-color:#1A3E5E;
+   width:100%;
+ }
+
+.nav-tabs > li a { 
+    border: 1px solid #1A3E5E;
+    background-color:#2F71AB; 
+    color:#fff;
+    }
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover{
+    background-color:#D6E6F3;
+    color:#000;
+    border: 1px solid #1A3E5E;
+    border-bottom-color: transparent;
+    }
+
+.nav-tabs > li > a:hover{
+  background-color: #D6E6F3 !important;
+    border-radius: 5px;
+    color:#000;
+
+} 
+
+.tab-pane {
+    border:solid 1px #1A3E5E;
+    border-top: 0; 
+    width:100%;
+    background-color:#D6E6F3;
+    padding:5px;
+
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+{% load static %}
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  {% for g in games %}
+  {% if forloop.counter == 1 %}
+  <li class="active"><a href={{g.in_tag}} role="tab" data-toggle="tab">
+  <img src="{% static g.a_s_logo %}" alt="logo" style="width:18px;height:18px;">
+  {{g.a_tri}}<br>
+  <img src="{% static g.h_s_logo %}" alt="logo" style="width:18px;height:18px;">
+  {{g.h_tri}}<br>
+  {{g.time}}
+  </a></li>
+  {% else %}
+  <li><a href={{g.in_tag}} role="tab" data-toggle="tab">
+  <img src="{% static g.a_s_logo %}" alt="logo" style="width:18px;height:18px;">
+  {{g.a_tri}}<br>
+  <img src="{% static g.h_s_logo %}" alt="logo" style="width:18px;height:18px;">
+  {{g.h_tri}}<br>
+  {{g.time}}
+  </a></li>
+  {% endif %}
+  {% endfor %}
+</ul>
+</li>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  {% for g in games %}
+  
+	  <div class="tab-pane {{g.active}}" id={{g.out_tag}}>
+	  <center>
+	  <h1 style="font-size:1.5em">
+	  {{g.time}}
+	  </h1>
+	  <h1 style="font-size:2.5em">
+	  <img src="{% static g.a_logo %}" alt="logo" style="width:100px;height:100px;">
+	  {{g.a_team_name}} at {{g.h_team_name}}
+	  <img src="{% static g.h_logo %}" alt="logo" style="width:100px;height:100px;">
+	  </h1>
+	  
+  
+	  <table border="1">
+	  <tr>
+	  <th><b>Tip off won:</b></th>
+	  <th>{{g.away_tip_off_won}} / {{g.away_game_played}} ({{g.away_tip_off_won_p}}%)</th>
+	  <th>{{g.home_tip_off_won}} / {{g.home_game_played}} ({{g.home_tip_off_won_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>Scored first after winning tip off:</b></th>
+	  <th>{{g.away_scored_first_after_winning_tip_off}} / {{g.away_tip_off_won}} ({{g.away_scored_first_after_winning_tip_off_p}}%)</th>
+	  <th>{{g.home_scored_first_after_winning_tip_off}} / {{g.home_tip_off_won}} ({{g.home_scored_first_after_winning_tip_off_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>Scored first:</b></th>
+	  <th>{{g.away_scored_first}} / {{g.away_game_played}} ({{g.away_scored_first_p}}%)</th>
+	  <th>{{g.home_scored_first}} / {{g.home_game_played}} ({{g.home_scored_first_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>First shot three:</b></th>
+	  <th>{{g.away_first_shot_three}} / {{g.away_game_played}} ({{g.away_first_shot_three_p}}%)</th>
+	  <th>{{g.home_first_shot_three}} / {{g.home_game_played}} ({{g.home_first_shot_three_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>Foul during first defence:</b></th>
+	  <th>{{g.away_foul_first_defence}} / {{g.away_game_played}} ({{g.away_foul_first_defence_p}}%)</th>
+	  <th>{{g.home_foul_first_defence}} / {{g.home_game_played}} ({{g.home_foul_first_defence_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>Offensive efficiency:</b></th>
+	  <th bgcolor='#f05758'>{{g.away_shot_made}} / {{g.away_total_shots}} ({{g.away_shot_made_p}}%)</th>
+	  <th bgcolor='#83c76b'>{{g.home_shot_made}} / {{g.home_total_shots}} ({{g.home_shot_made_p}}%)</th>
+	  </tr>
+	  
+	  <tr>
+	  <th><b>Jumpers:</b></th>
+	  <th>
+	  {% for j in g.away_jumpers %}
+	  {{j.name}} - {{j.elo}} ({{j.jumps}})<br>
+	  {% endfor %}
+	  </th>
+	  <th>
+	  {% for j in g.home_jumpers %}
+	  {{j.name}} - {{j.elo}} ({{j.jumps}})<br>
+	  {% endfor %}
+	  </th>
+	  </tr>
+
+      <tr>
+	  <th><b>First shooters:</b></th>
+	  <th>
+	  {% for j in g.away_shooters %}
+	  {{j.name}} {{j.made}}/{{j.total}} ({{j.percentage}}%)<br>
+	  {% endfor %}
+	  </th>
+	  <th>
+	  {% for j in g.home_shooters %}
+	  {{j.name}} {{j.made}}/{{j.total}} ({{j.percentage}}%)<br>
+	  {% endfor %}
+	  </th>
+	  </tr>
+	  
+	  
+	  <tr>
+	  <th><b>First shooters:</b></th>
+	  <th>
+	  {% for j in g.away_scorers %}
+	  {{j.name}} {{j.made}}<br>
+	  {% endfor %}
+	  </th>
+	  <th>
+	  {% for j in g.home_scorers %}
+	  {{j.name}} {{j.made}}<br>
+	  {% endfor %}
+	  </th>
+	  </tr>
+	  
+	  
+	  </table>  
+  
+  	  {% for j in g.probs %}
+  	  <h1 style="font-size:1em">{{j.j1}} has {{j.pj}}% of probability of beat {{j.j2}}. {{j.team}} have a probability of {{j.ps}}% ({{j.am}}) to score first.</h1>
+  	  {% endfor %}
+  
+	  </center>
+	  </div>
+  {% endfor %}
+</div>
+
+</body>
+</html>
+{% endblock %}

@@ -16,6 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from . import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.redirect_home),
+    path('<slug:day>', views.todays_games, name='index'),
+    path('team/<int:team_id>', views.team_page, name='team_page'),
+    path('elo/elo_standing', views.elo_standing, name='elo_standing'),
+    path('elo/elo_compare', views.elo_compare, name='elo_compare'),
+    
 ]

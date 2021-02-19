@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
+</head>
+
+<body>
+
+{% load static %}
+
+
+<h1 style="font-size:2.5em">
+<img src="{% static logo %}" alt="logo" style="width:100px;height:100px;">
+{{team}}
+</h1>
+{% for y in year %}
+<h1 style="font-size:1.5em">{{y.year}}</h1>
+<table border="1">
+<tr>
+<th><b>Tip off won:</b></th>
+<th>{{y.tip_off_won}} / {{y.game_played}} ({{y.tip_off_won_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>Scored first after winning tip off:</b></th>
+<th>{{y.scored_first_after_winning_tip_off}} / {{y.game_played}} ({{y.scored_first_after_winning_tip_off_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>Scored first:</b></th>
+<th>{{y.scored_first}} / {{y.game_played}} ({{y.scored_first_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>First shot three:</b></th>
+<th>{{y.first_shot_three}} / {{y.game_played}} ({{y.first_shot_three_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>Foul during first defence:</b></th>
+<th>{{y.foul_first_defence}} / {{y.game_played}} ({{y.foul_first_defence_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>Offensive efficiency:</b></th>
+<th>{{y.shot_made}} / {{y.total_shots}} ({{y.shot_made_p}}%)</th>
+</tr>
+
+<tr>
+<th><b>Jumpers:</b></th>
+<th>
+{% for j in y.jumpers %}
+{{j.name}} - {{j.elo}} ({{j.jumps}} jumps)<br>
+{% endfor %}
+</th>
+</tr>
+
+{% if forloop.counter == 1 %}
+<tr>
+<th><b>Last 5 jumps:</b></th>
+<th>
+{% for j in y.l5_jumpers %}
+{{j.name}} ({{j.made}})<br>
+{% endfor %}
+</th>
+</tr>
+{% endif %}
+
+<tr>
+<th><b>First shooters:</b></th>
+<th>
+{% for j in y.shooters %}
+{{j.name}} {{j.made}}/{{j.total}} ({{j.percentage}}%)<br>
+{% endfor %}
+</th>
+</tr>
+	  
+{% if forloop.counter == 1 %}
+<tr>
+<th><b>Last 5 Shooters:</b></th>
+<th>
+{% for j in y.l5_shooters %}
+{{j.name}} ({{j.made}})<br>
+{% endfor %}
+</th>
+</tr>
+{% endif %}
+
+<tr>
+<th><b>First scorers:</b></th>
+<th>
+{% for j in y.scorers %}
+{{j.name}} {{j.made}}<br>
+{% endfor %}
+</th>
+</tr>
+ 
+ {% if forloop.counter == 1 %}
+<tr>
+<th><b>Last 5 scorers:</b></th>
+<th>
+{% for j in y.l5_scorers %}
+{{j.name}} <br>
+{% endfor %}
+</th>
+</tr>
+{% endif %}
+ 
+ 
+ 
+</table> 
+{% endfor %}
+
+
+
+</div>
+
+</body>
+</html>
+{% endblock %}
