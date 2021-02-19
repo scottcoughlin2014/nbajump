@@ -15,7 +15,6 @@ from firsttoscore.management.commands.update_schedule import update_schedule
 from firsttoscore.management.commands.show_games import scoring_first_probability
 
 from django.shortcuts import redirect
-from .forms import PlayerForm
 
 
 def redirect_home(request):
