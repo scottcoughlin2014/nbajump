@@ -19,30 +19,15 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'jumpnba')
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-try:
-    SECRET_KEY
-except NameError:
-    SECRET_FILE = os.path.join(BASE_DIR, 'secret.txt')
-    try:
-        SECRET_KEY = open(SECRET_FILE).read().strip()
-    except IOError:
-        try:
-            import random
-            SECRET_KEY = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
-            secret = open(SECRET_FILE, 'w')
-            secret.write(SECRET_KEY)
-            secret.close()
-        except IOError:
-            Exception('Please create a %s file with random characters \
-            to generate your secret key!' % SECRET_FILE)
+SECRET_KEY = 'stak+!&57wue0x(c$$^fi_00w4!%_d_n*es64pw4xc&6lms7dy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost]"
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -58,7 +43,7 @@ INSTALLED_APPS = [
 #    'teams',
     'firsttoscore',
 #    'games',
-#    'django_extensions',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -97,10 +82,8 @@ WSGI_APPLICATION = 'jumpnba.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['JUMPNBA_DATABASE_NAME'],
-        'USER': os.environ['JUMPNBA_USER'],
-        'PASSWORD': os.environ['JUMPNBA_PASSWORD'],
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
