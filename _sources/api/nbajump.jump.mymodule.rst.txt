@@ -1,0 +1,4 @@
+.. automodule:: nbajump.jump.mymodule
+   :members:
+   :undoc-members:
+   :show-inheritance:

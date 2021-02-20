@@ -1,0 +1,18 @@
+nbajump.jump package
+====================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   nbajump.jump.mymodule
+
+Module contents
+---------------
+
+.. automodule:: nbajump.jump
+   :members:
+   :undoc-members:
+   :show-inheritance:
