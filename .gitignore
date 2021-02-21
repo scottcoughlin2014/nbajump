@@ -25,6 +25,9 @@ wheels/
 *.egg
 MANIFEST
 
+#Django
+secret.txt
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -65,7 +68,6 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-docs/api/
 
 # PyBuilder
 target/
@@ -94,6 +96,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+
+#Max
+.DS_Store
 
 # Rope project settings
 .ropeproject

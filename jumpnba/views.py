@@ -33,7 +33,7 @@ def todays_games(request,day):
         if str(_year) in _t.stats and len(_t.stats[str(_year)]['starters'])>0:
             view['teams'].append({
             'team_id':_t.team_id,
-            'nick':_t.names[3],
+            'nick':_t.names[0],
             's_logo':'images/s_{}.png'.format(_t.tricode)
             })
 
@@ -244,7 +244,7 @@ def team_page(request,team_id):
         if '2020' in _t.stats and len(_t.stats['2020']['starters'])>0:
             context['teams'].append({
             'team_id':_t.team_id,
-            'nick':_t.names[3],
+            'nick':_t.names[0],
             's_logo':'images/s_{}.png'.format(_t.tricode)
             })
     
@@ -362,7 +362,7 @@ def elo_standing(request):
         if '2020' in t.stats and len(t.stats['2020']['starters'])>0:
             context['teams'].append({
             'team_id':t.team_id,
-            'nick':t.names[3],
+            'nick':t.names[0],
             's_logo':'images/s_{}.png'.format(t.tricode)
             })
     
@@ -390,7 +390,7 @@ def elo_compare(request):
             context['teams_sel'].append({'team_id':t.team_id,'full_name':t.full_name})
             context['teams'].append({
             'team_id':t.team_id,
-            'nick':t.names[3],
+            'nick':t.names[0],
             's_logo':'images/s_{}.png'.format(t.tricode)
             })
             

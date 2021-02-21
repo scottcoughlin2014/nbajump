@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table id="elo_jumpball_table" class="display" style="width:100%" border="1">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Elo score</th>
+        <th>Jumps</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in list %}
+      <tr>
+        <td>{{p.first}} {{p.last}}</td>
+        <td>{{p.elo}}</td>
+        <td>{{p.jumps}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Player</th>
+        <th>Elo score</th>
+        <th>Jumps</th>
+      </tr>
+    </tfoot>
+</table>
+
+<script>
+$(document).ready(function() {
+  $('#elo_jumpball_table').DataTable( {
+    autoWidth: true,
+    dom: 'Bfrtip',
+    buttons: [
+            {
+                extend: 'csv',
+                extension: 'elo_jumpball_table.csv',
+                text: 'Download ELO Standings to CSV',
+            },
+        ]
+  } );
+} );
+</script>
+
+</body>
+</html>
+
+{% endblock %}

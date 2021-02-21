@@ -1,4 +1,3 @@
-rm ./*/migrations/000*py
 rm db.sqlite3
 ./manage.py makemigrations
 ./manage.py migrate

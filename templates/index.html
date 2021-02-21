@@ -1,54 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
-<style>
-.nav-tabs
- {
-   border-color:#1A3E5E;
-   width:100%;
- }
-
-.nav-tabs > li a { 
-    border: 1px solid #1A3E5E;
-    background-color:#2F71AB; 
-    color:#fff;
-    }
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:focus,
-.nav-tabs > li.active > a:hover{
-    background-color:#D6E6F3;
-    color:#000;
-    border: 1px solid #1A3E5E;
-    border-bottom-color: transparent;
-    }
-
-.nav-tabs > li > a:hover{
-  background-color: #D6E6F3 !important;
-    border-radius: 5px;
-    color:#000;
-
-} 
-
-.tab-pane {
-    border:solid 1px #1A3E5E;
-    border-top: 0; 
-    width:100%;
-    background-color:#D6E6F3;
-    padding:5px;
-
-}
-</style>
-</head>
-
-<body>
 <div class="container">
 
 {% load static %}
@@ -93,7 +45,7 @@
 	  </h1>
 	  
   
-	  <table border="1">
+	  <table border="1" id="game-table">
 	  <tr>
 	  <th><b>Tip off won:</b></th>
 	  <th>{{g.away_tip_off_won}} / {{g.away_game_played}} ({{g.away_tip_off_won_p}}%)</th>
@@ -126,8 +78,8 @@
 	  
 	  <tr>
 	  <th><b>Offensive efficiency:</b></th>
-	  <th bgcolor='#f05758'>{{g.away_shot_made}} / {{g.away_total_shots}} ({{g.away_shot_made_p}}%)</th>
-	  <th bgcolor='#83c76b'>{{g.home_shot_made}} / {{g.home_total_shots}} ({{g.home_shot_made_p}}%)</th>
+	  <th>{{g.away_shot_made}} / {{g.away_total_shots}} ({{g.away_shot_made_p}}%)</th>
+	  <th>{{g.home_shot_made}} / {{g.home_total_shots}} ({{g.home_shot_made_p}}%)</th>
 	  </tr>
 	  
 	  <tr>
@@ -184,7 +136,18 @@
 	  </div>
   {% endfor %}
 </div>
+<script>
+$('#game-table tr th:contains("%")').each(function(){
+var idx_end = $(this).text().indexOf("%");
+var idx_start = idx_end - 4;
 
-</body>
-</html>
+var floatValue = +($(this).text().substr(idx_start, idx_end-idx_start));
+if (floatValue > 70.0){
+$(this).css('color', 'green');
+}
+else if (floatValue < 40.0){
+$(this).css('color', 'red');
+};
+})
+</script>
 {% endblock %}
