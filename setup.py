@@ -2,22 +2,22 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) Giacomo Terreran (2021)
 #
-# This file is part of the nbajump python package.
+# This file is part of the jumpnba python package.
 #
-# nbajump is free software: you can redistribute it and/or modify
+# jumpnba is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# nbajump is distributed in the hope that it will be useful,
+# jumpnba is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with nbajump.  If not, see <http://www.gnu.org/licenses/>.
+# along with jumpnba.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Setup the nbajump package
+"""Setup the jumpnba package
 """
 
 from __future__ import print_function
@@ -35,17 +35,6 @@ cmdclass = {}
 import versioneer
 __version__ = versioneer.get_version()
 cmdclass.update(versioneer.get_cmdclass())
-
-# ONLY IF WRAPPING C C++ OR FORTRAN
-"""
-from distutils.command.sdist import sdist
-try:
-    from numpy.distutils.core import setup, Extension
-except ImportError:
-    raise ImportError("Building fortran extensions requires numpy.")
-
-cmdclass["sdist"] = sdist
-"""
 
 # -- documentation ------------------------------------------------------------
 
@@ -76,6 +65,7 @@ else:
 # packages that are compatbile with your software.
 install_requires = [
     'requests',
+    'django',
     #'pyblast @ https://github.com/CIERA-Northwestern/pyblast/tarball/master',
     #'scipy >= 0.12.1',
     #'matplotlib >= 1.2.0, != 2.1.0, != 2.1.1',
@@ -100,24 +90,16 @@ extras_require = {
         'sphinx_rtd_theme',
         'sphinxcontrib_programoutput',
     ],
-    'ml': ['theano'],
 }
 
-# ONLY IF WRAPPING C C++ OR FORTRAN
-"""
-# fortran compile
-wrapper = Extension('cosmic._evolvebin', sources=['cosmic/src/comenv.f', 'cosmic/src/corerd.f', 'cosmic/src/deltat.f', 'cosmic/src/dgcore.f', 'cosmic/src/evolv2.f', 'cosmic/src/gntage.f', 'cosmic/src/hrdiag.f', 'cosmic/src/instar.f', 'cosmic/src/kick.f', 'cosmic/src/mix.f', 'cosmic/src/mlwind.f', 'cosmic/src/mrenv.f', 'cosmic/src/ran3.f', 'cosmic/src/rl.f', 'cosmic/src/star.f', 'cosmic/src/zcnsts.f', 'cosmic/src/zfuncs.f', 'cosmic/src/concatkstars.f', 'cosmic/src/bpp_array.f'], extra_compile_args = ["-g"], )#extra_f77_compile_args=["-O0"], extra_f90_compile_args=["-O0"])
-"""
-
 # -- run setup ----------------------------------------------------------------
-
 packagenames = find_packages()
 
 # Executables go in a folder called bin
 scripts = glob.glob(os.path.join('bin', '*'))
 
-PACKAGENAME = 'nbajump'
-DISTNAME = 'ciera-template' #'YOUR DISTRIBTUION NAME (I.E. PIP INSTALL DISTNAME)' Generally good to be same as packagename
+PACKAGENAME = 'jumpnba'
+DISTNAME = 'django-jumpnba' #'YOUR DISTRIBTUION NAME (I.E. PIP INSTALL DISTNAME)' Generally good to be same as packagename
 AUTHOR = 'Giacomo Terreran'
 AUTHOR_EMAIL = 'scottcoughlin2014@u.northwestern.edu'
 LICENSE = 'GPLv3+'
@@ -156,9 +138,6 @@ setup(name=DISTNAME,
           'Intended Audience :: End Users/Desktop',
           'Intended Audience :: Science/Research',
           'Natural Language :: English',
-          'Topic :: Scientific/Engineering',
-          'Topic :: Scientific/Engineering :: Astronomy',
-          'Topic :: Scientific/Engineering :: Physics',
           'Operating System :: POSIX',
           'Operating System :: Unix',
           'Operating System :: MacOS',
