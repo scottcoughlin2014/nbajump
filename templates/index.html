@@ -1,54 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script> 
-<style>
-.nav-tabs
- {
-   border-color:#1A3E5E;
-   width:100%;
- }
-
-.nav-tabs > li a { 
-    border: 1px solid #1A3E5E;
-    background-color:#2F71AB; 
-    color:#fff;
-    }
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:focus,
-.nav-tabs > li.active > a:hover{
-    background-color:#D6E6F3;
-    color:#000;
-    border: 1px solid #1A3E5E;
-    border-bottom-color: transparent;
-    }
-
-.nav-tabs > li > a:hover{
-  background-color: #D6E6F3 !important;
-    border-radius: 5px;
-    color:#000;
-
-} 
-
-.tab-pane {
-    border:solid 1px #1A3E5E;
-    border-top: 0; 
-    width:100%;
-    background-color:#D6E6F3;
-    padding:5px;
-
-}
-</style>
-</head>
-
-<body>
 <div class="container">
 
 {% load static %}
@@ -184,7 +136,4 @@
 	  </div>
   {% endfor %}
 </div>
-
-</body>
-</html>
 {% endblock %}
