@@ -7,6 +7,10 @@ from firsttoscore.models import Player
 from firsttoscore.models import Team
 from firsttoscore.models import Game
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 def compareRating(_player_elo, _opponent_elo):
     """
     Compares the two ratings of the this player and the opponent.

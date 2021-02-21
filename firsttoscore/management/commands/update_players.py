@@ -3,6 +3,10 @@ from django.utils import timezone
 from firsttoscore.models import Player
 from requests import get
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 def update_players(_year):
     no_update=1
     #______________________________________________________

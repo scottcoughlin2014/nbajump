@@ -4,6 +4,10 @@ from django.utils import timezone
 from requests import get
 import json
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 class Command(BaseCommand):
     help = 'start teams database'
 
