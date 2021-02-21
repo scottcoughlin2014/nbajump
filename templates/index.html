@@ -45,7 +45,7 @@
 	  </h1>
 	  
   
-	  <table border="1">
+	  <table border="1" id="game-table">
 	  <tr>
 	  <th><b>Tip off won:</b></th>
 	  <th>{{g.away_tip_off_won}} / {{g.away_game_played}} ({{g.away_tip_off_won_p}}%)</th>
@@ -78,8 +78,8 @@
 	  
 	  <tr>
 	  <th><b>Offensive efficiency:</b></th>
-	  <th bgcolor='#f05758'>{{g.away_shot_made}} / {{g.away_total_shots}} ({{g.away_shot_made_p}}%)</th>
-	  <th bgcolor='#83c76b'>{{g.home_shot_made}} / {{g.home_total_shots}} ({{g.home_shot_made_p}}%)</th>
+	  <th>{{g.away_shot_made}} / {{g.away_total_shots}} ({{g.away_shot_made_p}}%)</th>
+	  <th>{{g.home_shot_made}} / {{g.home_total_shots}} ({{g.home_shot_made_p}}%)</th>
 	  </tr>
 	  
 	  <tr>
@@ -136,4 +136,18 @@
 	  </div>
   {% endfor %}
 </div>
+<script>
+$('#game-table tr th:contains("%")').each(function(){
+var idx_end = $(this).text().indexOf("%");
+var idx_start = idx_end - 4;
+
+var floatValue = +($(this).text().substr(idx_start, idx_end-idx_start));
+if (floatValue > 70.0){
+$(this).css('color', 'green');
+}
+else if (floatValue < 40.0){
+$(this).css('color', 'red');
+};
+})
+</script>
 {% endblock %}
