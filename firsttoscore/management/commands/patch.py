@@ -3,6 +3,10 @@ from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
 from firsttoscore.models import Player
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):

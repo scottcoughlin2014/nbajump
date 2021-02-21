@@ -101,10 +101,10 @@ scripts = glob.glob(os.path.join('bin', '*'))
 PACKAGENAME = 'jumpnba'
 DISTNAME = 'django-jumpnba' #'YOUR DISTRIBTUION NAME (I.E. PIP INSTALL DISTNAME)' Generally good to be same as packagename
 AUTHOR = 'Giacomo Terreran'
-AUTHOR_EMAIL = 'scottcoughlin2014@u.northwestern.edu'
+AUTHOR_EMAIL = 'gqterre@gmail.com'
 LICENSE = 'GPLv3+'
-DESCRIPTION = 'MY DESCRIPTION'
-GITHUBURL = 'https://github.com/CIERA-Northwestern/template.git'
+DESCRIPTION = 'A Django application to track proficiencies of NBA teams to score first written by Giacomo Terreran <gqterre@gmail.com>, Scott Coughlin <scottcoughlin2014@u.northwestern.edu>, and Kyle Kremer <kylekremer23@gmail.com>'
+GITHUBURL = 'https://github.com/scottcoughlin2014/nbajump.git'
 
 setup(name=DISTNAME,
       provides=[PACKAGENAME],

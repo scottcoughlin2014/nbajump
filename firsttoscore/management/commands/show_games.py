@@ -13,6 +13,10 @@ from firsttoscore.management.commands.update_stats import update_stats
 from firsttoscore.management.commands.update_players import update_players
 from firsttoscore.management.commands.update_schedule import update_schedule
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 def scoring_first_probability(pj,oe_1,oe_2):
     #team 1 has pj_1 probability to win the tip off and then oe_1 to score.
     #so the probability to win the tip-off and scoring immediately after is

@@ -5,6 +5,10 @@ from datetime import datetime
 from requests import get
 import json,pytz
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 def update_schedule(_year):
     #_____________________________________________________________
     #get schedule json.

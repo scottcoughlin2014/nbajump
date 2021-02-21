@@ -16,6 +16,10 @@ from firsttoscore.management.commands.show_games import scoring_first_probabilit
 
 from django.shortcuts import redirect
 
+__author__ = 'Giacomo Terreran <gqterre@gmail.com>'
+__credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
+               'Kyle Kremer <kylekremer23@gmail.com>']
+
 
 def redirect_home(request):
     response = redirect('/today')
