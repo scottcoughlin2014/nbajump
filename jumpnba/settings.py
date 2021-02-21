@@ -94,14 +94,10 @@ WSGI_APPLICATION = 'jumpnba.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['JUMPNBA_DATABASE_NAME'],
-        'USER': os.environ['JUMPNBA_USER'],
-        'PASSWORD': os.environ['JUMPNBA_PASSWORD'],
-        'HOST' : "127.0.0.1",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
