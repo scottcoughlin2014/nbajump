@@ -1,8 +1,6 @@
 # DJANGO Fanduel NBA Jumpball
 ## Credits
-```
 A Django application to track proficiencies of NBA teams to score first written by Giacomo Terreran <gqterre@gmail.com>, Scott Coughlin <scottcoughlin2014@u.northwestern.edu>, and Kyle Kremer <kylekremer23@gmail.com>
-```
 
 ## Install
 We recommend creating an anaconda virtual environment. That way you can also automatically set the `DJANGO_SETTINGS_MODULE` environmnetal variable correctly upon activation and unset upon deactivation
