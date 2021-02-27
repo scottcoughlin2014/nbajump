@@ -16,6 +16,7 @@ table {
     margin-top: 20px;
     padding: 0;
     list-style: none;
+    font: 400 12px/1.5 'Avenir', Helvetica, sans-serif;
 }
 
 .nav-tabs
@@ -24,10 +25,14 @@ table {
    width:100%;
  }
 
-.nav-tabs > li a { 
-    border: 1px solid #1A3E5E;
-    background-color:#2F71AB; 
-    color:#fff;
+.nav-tabs > li {
+    border: 2px solid #1A3E5E;
+    background-color:#2F71AB;
+    width: 90px;
+    }
+
+.nav-tabs > li >a{
+    color:white;
     }
 
 .nav-tabs > li.active > a,
@@ -39,16 +44,16 @@ table {
     border-bottom-color: transparent;
     }
 
-.nav-tabs > li > a:hover{
+.nav-tabs > li :hover{
   background-color: #D6E6F3 !important;
     border-radius: 5px;
     color:#000;
 
-} 
+}
 
 .tab-pane {
     border:solid 1px #1A3E5E;
-    border-top: 0; 
+    border-top: 0;
     width:100%;
     background-color:#D6E6F3;
     padding:5px;
