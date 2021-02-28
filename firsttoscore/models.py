@@ -21,6 +21,10 @@ class Game(models.Model):
     h_odds = models.FloatField(default=0)
     a_odds = models.FloatField(default=0)
 
+    fd_id = models.FloatField(default=0)
+
+    projected_starters = models.JSONField(blank=True, null=True)
+
     # Hypothetical return
     profit = models.FloatField(default=0)
 
@@ -61,11 +65,3 @@ class Team(models.Model):
     
     def __str__(self):
         return '{} ({})'.format(self.full_name, self.tricode)
-
-"""
-class TeamToScoreFirstOdds(models.Model):
-    odds = models.FloatField(default=0)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    game_time = models.CharField(max_length=25)
-    fanduel_event_id = models.FloatField(default=0)
-"""
