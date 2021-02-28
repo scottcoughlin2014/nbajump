@@ -43,7 +43,7 @@ def todays_games(request,day):
 
     update_players(_year)
 
-    update_schedule(_year)
+#    update_schedule(_year)
     
     update_stats(_year)
 
@@ -79,6 +79,8 @@ def todays_games(request,day):
         h_team_name=h_team.full_name
         view['games'].append({
         'active':active,
+        'h_odds' : game.h_odds,
+        'a_odds' : game.a_odds,
         'time':game.game_time.split()[0]+' ET',
         'a_tri':game.tricode[:3],
         'h_tri':game.tricode[3:],

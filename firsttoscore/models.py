@@ -15,6 +15,15 @@ class Game(models.Model):
     tricode = models.CharField(max_length=25)
     h_team = models.CharField(max_length=25)
     a_team = models.CharField(max_length=25)
+
+    # Fanduel specific
+    # odds for first to score in this game from fanduel
+    h_odds = models.FloatField(default=0)
+    a_odds = models.FloatField(default=0)
+
+    # Hypothetical return
+    profit = models.FloatField(default=0)
+
     jumpers = models.JSONField()
     jump_win = models.IntegerField()
     team_first_score = models.IntegerField()
@@ -52,3 +61,11 @@ class Team(models.Model):
     
     def __str__(self):
         return '{} ({})'.format(self.full_name, self.tricode)
+
+"""
+class TeamToScoreFirstOdds(models.Model):
+    odds = models.FloatField(default=0)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    game_time = models.CharField(max_length=25)
+    fanduel_event_id = models.FloatField(default=0)
+"""
