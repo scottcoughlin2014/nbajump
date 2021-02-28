@@ -2,6 +2,7 @@ from django.shortcuts import render
 from datetime import datetime,timedelta,date
 from operator import itemgetter
 import sys,json,os,argparse,pytz
+import requests
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand, CommandError
@@ -11,6 +12,7 @@ from firsttoscore.models import Game
 from firsttoscore.management.commands.update_stats import compareRating
 from firsttoscore.management.commands.update_stats import update_stats
 from firsttoscore.management.commands.update_players import update_players
+from firsttoscore.management.commands.get_odds import get_odds
 from firsttoscore.management.commands.update_schedule import update_schedule
 from firsttoscore.management.commands.show_games import scoring_first_probability
 
@@ -19,7 +21,6 @@ from django.shortcuts import redirect
 __author__ = 'Giacomo Terreran <gqterre@gmail.com>'
 __credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
                'Kyle Kremer <kylekremer23@gmail.com>']
-
 
 def redirect_home(request):
     response = redirect('/today')
@@ -43,9 +44,11 @@ def todays_games(request,day):
 
     update_players(_year)
 
-    update_schedule(_year)
+#    update_schedule(_year)
     
     update_stats(_year)
+
+    get_odds()
 
     #Checking what games are played today
     
@@ -79,6 +82,8 @@ def todays_games(request,day):
         h_team_name=h_team.full_name
         view['games'].append({
         'active':active,
+        'h_odds' : game.h_odds,
+        'a_odds' : game.a_odds,
         'time':game.game_time.split()[0]+' ET',
         'a_tri':game.tricode[:3],
         'h_tri':game.tricode[3:],
@@ -152,7 +157,12 @@ def todays_games(request,day):
         for i,d in enumerate([a_d,h_d]):
             for _s in d['jumper_list']:
                 p=Player.objects.get(nba_id=_s)
-                out[i].append([p.last_name,p.elo_score,p.jumps_jumped])
+                # compare against prpjected starters
+                if game.projected_starters:
+                    if _s in game.projected_starters:
+                        out[i].append([p.last_name,p.elo_score,p.jumps_jumped])
+                else:
+                    out[i].append([p.last_name,p.elo_score,p.jumps_jumped])
 
         out[0]=sorted(out[0],reverse=1,key=itemgetter(1))
         out[1]=sorted(out[1],reverse=1,key=itemgetter(1))
