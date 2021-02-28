@@ -9,7 +9,7 @@
 <ul class="nav nav-tabs" role="tablist">
   {% for g in games %}
   {% if forloop.counter == 1 %}
-  <li class="active"><a href={{g.in_tag}} role="tab" data-toggle="tab">
+  <li class="active"><a1 href={{g.in_tag}} role="tab" data-toggle="tab">
   <img src="{% static g.a_s_logo %}" alt="logo" style="width:18px;height:18px;">
   {{g.a_tri}}<br>
   <img src="{% static g.h_s_logo %}" alt="logo" style="width:18px;height:18px;">
@@ -129,7 +129,7 @@
 	  </table>  
   
   	  {% for j in g.probs %}
-  	  <h1 style="font-size:1em">{{j.j1}} has {{j.pj}}% of probability of beat {{j.j2}}. {{j.team}} have a probability of {{j.ps}}% ({{j.am}}) to score first.</h1>
+  	  <h1 style="font-size:1em">{{j.j1}} has {{j.pj}}% of probability of beat {{j.j2}}. {{j.team}} have a probability of {{j.ps}}% ({{j.am}}) to score first. Odds from Fanduel for home team is {{g.h_odds}} and away team is {{g.a_odds}}</h1>
   	  {% endfor %}
   
 	  </center>
