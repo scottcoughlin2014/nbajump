@@ -33,12 +33,18 @@ def update_schedule(_year):
 
             Game.objects.create(season=_year,game_id = el["gameId"] , game_utc = utc, game_date = el["startDateEastern"] , game_time = el["startTimeEastern"], stage = el["seasonStageId"] , tricode = el["gameUrlCode"].split('/')[1] , h_team = el["hTeam"]["teamId"] , a_team = el["vTeam"]["teamId"] , jumpers = [] , all_first_scorers = [] , all_first_shooters = [], jump_win = 0, team_first_score = 0, player_first_score = 0, last_update = TODAY_UTC)
         else:
+            try:
+                utc = pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+            except:
+                utc = pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%d'))
+        
             g=Game.objects.get(game_id = el["gameId"])
-            gt=pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ'))
-            if g.game_utc !=gt:
-                print('{0} game (gameID: {1}) rescheduled from {2} to {3}.'.format(g.tricode,g.game_id,g.game_utc,gt))
+            if g.game_utc !=utc:
+                print('{0} game (gameID: {1}) rescheduled from {2} to {3}.'.format(g.tricode,g.game_id,g.game_utc,utc))
                 update=1
-                g.game_utc = gt
+                g.game_utc = utc
+                g.game_date = el["startDateEastern"]
+                g.game_time = el["startTimeEastern"]
                 g.last_update = TODAY_UTC
                 g.save()
 
