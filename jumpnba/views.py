@@ -42,9 +42,9 @@ def todays_games(request,day):
             's_logo':'images/s_{}.png'.format(_t.tricode)
             })
 
-    #update_players(_year)
+    update_players(_year)
 
-    #update_schedule(_year)
+    update_schedule(_year)
     
     update_stats(_year)
 
