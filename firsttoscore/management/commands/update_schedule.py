@@ -26,8 +26,12 @@ def update_schedule(_year):
             if update==0:
                 print('Initializing {0} schedule.'.format(_year))
                 update=1
+            try:
+                utc = pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+            except:
+                utc = pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%d'))
 
-            Game.objects.create(season=_year,game_id = el["gameId"] , game_utc = pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ')), game_date = el["startDateEastern"] , game_time = el["startTimeEastern"], stage = el["seasonStageId"] , tricode = el["gameUrlCode"].split('/')[1] , h_team = el["hTeam"]["teamId"] , a_team = el["vTeam"]["teamId"] , jumpers = [] , all_first_scorers = [] , all_first_shooters = [], jump_win = 0, team_first_score = 0, player_first_score = 0, last_update = TODAY_UTC)
+            Game.objects.create(season=_year,game_id = el["gameId"] , game_utc = utc, game_date = el["startDateEastern"] , game_time = el["startTimeEastern"], stage = el["seasonStageId"] , tricode = el["gameUrlCode"].split('/')[1] , h_team = el["hTeam"]["teamId"] , a_team = el["vTeam"]["teamId"] , jumpers = [] , all_first_scorers = [] , all_first_shooters = [], jump_win = 0, team_first_score = 0, player_first_score = 0, last_update = TODAY_UTC)
         else:
             g=Game.objects.get(game_id = el["gameId"])
             gt=pytz.utc.localize(datetime.strptime(el["startTimeUTC"], '%Y-%m-%dT%H:%M:%S.%fZ'))
