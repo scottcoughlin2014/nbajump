@@ -6,6 +6,7 @@ from datetime import date
 import datetime
 import math
 
+from pytz import timezone 
 from django.core.management.base import BaseCommand, CommandError
 from firsttoscore.models import Team, Game, Player
 
@@ -41,7 +42,11 @@ def parse_individual_game_data(jsonData, hometeam=None, awayteam=None):
         elif k["name"] == "First Basket":
             for idx, projected_game_starters in enumerate(k["selections"]):
                 projected_starters.append(projected_game_starters["name"])
-    results_df = pd.DataFrame({"away_team_name" : all_team_names[0], "a_odds" : all_odds[0], "home_team_name" : all_team_names[1], "h_odds" : all_odds[1], "projected_starters" : [projected_starters]}, index=[0])
+
+    try:
+        results_df = pd.DataFrame({"away_team_name" : all_team_names[0], "a_odds" : all_odds[0], "home_team_name" : all_team_names[1], "h_odds" : all_odds[1], "projected_starters" : [projected_starters]}, index=[0])
+    except:
+        results_df = pd.DataFrame()
     return results_df
 
 def clean_team_name(x):
@@ -69,7 +74,12 @@ def get_odds():
         h_team = Team.objects.get(full_name=row["home_team_name"])
         a_team = Team.objects.get(full_name=row["away_team_name"])
         # get the game info
-        game = Game.objects.get(h_team=h_team.team_id, a_team=a_team.team_id, game_date=datetime.datetime.now().strftime("%Y%m%d"))
+        tz = timezone('EST')
+        try:
+            game = Game.objects.get(h_team=h_team.team_id, a_team=a_team.team_id, game_date=datetime.datetime.now(tz).strftime("%Y%m%d"))
+        except:
+            tomorrow_date = (datetime.datetime.now(tz) + datetime.timedelta(1)).strftime("%Y%m%d")
+            game = Game.objects.get(h_team=h_team.team_id, a_team=a_team.team_id, game_date=tomorrow_date)
         game.h_odds = row["h_odds"]
         game.a_odds = row["a_odds"]
         game.fd_id = row["gameid"]
@@ -83,12 +93,16 @@ def get_odds():
                 p_starter = p_starter.replace(p_starter.split(" ")[0][-1] + ' ', p_starter.split(" ")[0][-1] + '. ')
             if p_starter == "Mo Wagner":
                 p_starter = "Moritz Wagner"
+            if p_starter == "Wendell Carter":
+                p_starter = "Wendell Carter Jr."
+            if p_starter == "Karl Anthony Towns":
+                p_starter = "Karl-Anthony Towns"
 
             try:
                 # See if last name is suff
-                p_starter_id = Player.objects.get(team_id=a_team.team_id, first_name='-'.join(p_starter.split(" ")[0:-1]), last_name=p_starter.split(" ")[-1]).nba_id
+                p_starter_id = Player.objects.get(team_id=a_team.team_id, first_name=' '.join(p_starter.split(" ")[0:-1]), last_name=p_starter.split(" ")[-1]).nba_id
             except:
-                p_starter_id = Player.objects.get(team_id=h_team.team_id, first_name='-'.join(p_starter.split(" ")[0:-1]), last_name=p_starter.split(" ")[-1]).nba_id
+                p_starter_id = Player.objects.get(team_id=h_team.team_id, first_name=' '.join(p_starter.split(" ")[0:-1]), last_name=p_starter.split(" ")[-1]).nba_id
             finally:
                 if p_starter_id is None:
                     print("{0} not found".format(p_starter))
