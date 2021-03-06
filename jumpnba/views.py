@@ -16,6 +16,8 @@ from firsttoscore.management.commands.get_odds import get_odds
 from firsttoscore.management.commands.update_schedule import update_schedule
 from firsttoscore.management.commands.show_games import scoring_first_probability
 
+from .utils import get_plot
+
 from django.shortcuts import redirect
 
 __author__ = 'Giacomo Terreran <gqterre@gmail.com>'
@@ -44,17 +46,19 @@ def todays_games(request,day):
 
     update_players(_year)
 
-#    update_schedule(_year)
+    update_schedule(_year)
     
     update_stats(_year)
 
-    get_odds()
+    #get_odds()
 
     #Checking what games are played today
     
-    TODAY_UTC = timezone.now()
+    #TODAY_UTC = timezone.now()
+    TODAY_UTC = datetime.strptime('2021-03-11', '%Y-%m-%d')
     eastern = pytz.timezone('US/Eastern')
     TODAY = TODAY_UTC.astimezone(eastern)
+    print(TODAY)
     
     if tomorrow:
         date_to_show="|"+" "*47+"TOMORROW'S GAMES"+" "*48+"|"
@@ -64,7 +68,7 @@ def todays_games(request,day):
         date_to_show="|"+" "*49+"TODAY'S GAMES"+" "*49+"|"
         date_check=TODAY.strftime("%Y%m%d")
 
-    
+    print(date_check)
     schedule=Game.objects.filter(season=_year)
 
     #scrolling through the games
@@ -189,7 +193,7 @@ def todays_games(request,day):
                     am_p=100.*(1.-scoring_first)/scoring_first
                 else:
                     am_p=-100.*scoring_first/(1.-scoring_first)
-                view['games'][-1]['probs'].append({'j1':aj[0],'j2':hj[0],'pj':'{:.1f}'.format(p*100),'team':a_team_name,'ps':'{:.1f}'.format(scoring_first*100),'am':'{:.0f}'.format(am_p)})
+                view['games'][-1]['probs'].append({'j1':aj[0],'j2':hj[0],'pj1':'{:.1f}'.format(p*100),'pj2':'{:.1f}'.format((1-p)*100),'team1':a_team.tricode,'ps1':'{:.1f}'.format(scoring_first*100),'am1':'{:.0f}'.format(am_p),'team2':h_team.tricode,'ps2':'{:.1f}'.format((1-scoring_first)*100),'am2':'{:.0f}'.format(-am_p),'chart_pl':get_plot(p),'chart_te':get_plot(scoring_first)})
 
 
 

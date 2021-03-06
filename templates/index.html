@@ -127,11 +127,33 @@
 	  
 	  
 	  </table>  
-  
+      <table>
   	  {% for j in g.probs %}
+  	  <!--
   	  <h1 style="font-size:1em">{{j.j1}} has {{j.pj}}% of probability of beat {{j.j2}}. {{j.team}} have a probability of {{j.ps}}% ({{j.am}}) to score first. Odds from Fanduel for home team is {{g.h_odds}} and away team is {{g.a_odds}}</h1>
+  	  -->
+      <tr>
+      <th>
+  	  {{j.j1}} {{j.pj1}}%
+  	  </th>
+  	  <th>
+  	  <img src="data:image/png;base64, {{j.chart_pl|safe}}" style="width:100px;height:80px">
+  	  </th>
+  	  <th>
+  	  {{j.p2}} {{j.pj2}}% 
+  	  </th>
+  	  <th>
+  	  {{j.team1}} {{j.ps1}}% ({{j.am1}})
+  	  </th>
+  	  <th>
+  	  <img src="data:image/png;base64, {{j.chart_te|safe}}" style="width:100px;height:80px">
+  	  </th>
+  	  <th>
+  	  {{j.team2}} {{j.ps2}}% ({{j.am2}})
+  	  </th>
+  	  </tr>
   	  {% endfor %}
-  
+      </table>
 	  </center>
 	  </div>
   {% endfor %}
