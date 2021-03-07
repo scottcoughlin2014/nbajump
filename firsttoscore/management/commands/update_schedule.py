@@ -21,6 +21,19 @@ def update_schedule(_year):
     
     update=0
     for el in schedule_json["league"]["standard"]:
+        #___________________________________________
+        # game["seasonStageId"]==1 -> pre-season
+        # game["seasonStageId"]==2 -> regular-season
+        # game["seasonStageId"]==3 -> exhibition game (like the All-Star Game)
+        # game["seasonStageId"]==4 -> playoffs
+        #___________________________________________
+        
+        # skipping games not played yet, and including only main-season.
+        
+        if el["seasonStageId"] in [1,3]:
+            continue
+    
+    
         if not Game.objects.filter(game_id = el["gameId"]).exists():
            
             if update==0:
