@@ -60,6 +60,7 @@ class Team(models.Model):
     full_name = models.CharField(max_length=100)
     tricode = models.CharField(max_length=3)
     names = models.JSONField()
+    colors = models.JSONField()
     stats = models.JSONField()
     last_update = models.DateTimeField(auto_now=0, auto_now_add=0)
     

@@ -17,6 +17,7 @@ from firsttoscore.management.commands.update_schedule import update_schedule
 from firsttoscore.management.commands.show_games import scoring_first_probability
 
 from .utils import get_plot
+from .utils import compare_colors
 
 from django.shortcuts import redirect
 
@@ -37,12 +38,11 @@ def todays_games(request,day):
     
     view={'games':[],'teams':[],'showing_day':day}
     for _t in Team.objects.all():
-        if str(_year) in _t.stats and len(_t.stats[str(_year)]['starters'])>0:
-            view['teams'].append({
-            'team_id':_t.team_id,
-            'nick':_t.names[0],
-            's_logo':'images/s_{}.png'.format(_t.tricode)
-            })
+        view['teams'].append({
+        'team_id':_t.team_id,
+        'nick':_t.names[0],
+        's_logo':'images/s_{}.png'.format(_t.tricode)
+        })
 
     update_players(_year)
 
@@ -84,6 +84,11 @@ def todays_games(request,day):
         h_team=Team.objects.get(team_id=game.h_team)
         a_team_name=a_team.full_name
         h_team_name=h_team.full_name
+        a_color=a_team.colors[0]
+        if compare_colors(a_team.colors[0],h_team.colors[0]):
+            h_color=h_team.colors[0]
+        else:
+            h_color=h_team.colors[1]
         view['games'].append({
         'active':active,
         'h_odds' : game.h_odds,
@@ -161,16 +166,13 @@ def todays_games(request,day):
         for i,d in enumerate([a_d,h_d]):
             for _s in d['jumper_list']:
                 p=Player.objects.get(nba_id=_s)
-                # compare against prpjected starters
-                if game.projected_starters:
-                    if _s in game.projected_starters:
-                        out[i].append([p.last_name,p.elo_score,p.jumps_jumped])
-                else:
-                    out[i].append([p.last_name,p.elo_score,p.jumps_jumped])
+                out[i].append([p.last_name,p.elo_score,p.jumps_jumped,p.nba_id])
 
-        out[0]=sorted(out[0],reverse=1,key=itemgetter(1))
-        out[1]=sorted(out[1],reverse=1,key=itemgetter(1))
+        out[0]=sorted(out[0],reverse=1,key=itemgetter(2))
+        out[1]=sorted(out[1],reverse=1,key=itemgetter(2))
         
+        #keep only the most experienced jumper and the last who jumped in the last 5 games, different than the most experienced.
+
         view['games'][-1]['away_jumpers']=[]
         for _j in out[0]:
             view['games'][-1]['away_jumpers'].append({'name':_j[0],'elo':'{:.0f}'.format(_j[1]),'jumps':_j[2]})
@@ -178,9 +180,32 @@ def todays_games(request,day):
         view['games'][-1]['home_jumpers']=[]
         for _j in out[1]:
             view['games'][-1]['home_jumpers'].append({'name':_j[0],'elo':'{:.0f}'.format(_j[1]),'jumps':_j[2]})
-        
 
-            
+
+        # compare against projected starters
+        if game.projected_starters:
+            for i,d in enumerate([a_d,h_d]):
+                new_out=[]
+                for _s in d['jumper_list']:
+                    if _s in game.projected_starters:
+                        p=Player.objects.get(nba_id=_s)
+                        new_out.append([p.last_name,p.elo_score,p.jumps_jumped,p.nba_id])
+                out[i]=sorted(new_out,reverse=1,key=itemgetter(2))
+
+        for i,d in enumerate([a_d,h_d]):
+            if len(out[i])==1: #already only 1 jumper is playing. No brainer
+                continue
+            elif len(out[i])==0: #no jumpers playing. Problem
+                break
+            else:
+                most_experienced_jumper=out[i][0]
+                new_out=[most_experienced_jumper]
+                for _s in d['jumpers'][:-6:-1]:
+                    if int(most_experienced_jumper[-1])!=int(_s[0]):
+                        p=Player.objects.get(nba_id=_s[0])
+                        new_out.append([p.last_name,p.elo_score,p.jumps_jumped,p.nba_id])
+                        break
+                out[i]=new_out
 
 
         view['games'][-1]['probs']=[]
@@ -193,7 +218,7 @@ def todays_games(request,day):
                     am_p=100.*(1.-scoring_first)/scoring_first
                 else:
                     am_p=-100.*scoring_first/(1.-scoring_first)
-                view['games'][-1]['probs'].append({'j1':aj[0],'j2':hj[0],'pj1':'{:.1f}'.format(p*100),'pj2':'{:.1f}'.format((1-p)*100),'team1':a_team.tricode,'ps1':'{:.1f}'.format(scoring_first*100),'am1':'{:.0f}'.format(am_p),'team2':h_team.tricode,'ps2':'{:.1f}'.format((1-scoring_first)*100),'am2':'{:.0f}'.format(-am_p),'chart_pl':get_plot(p),'chart_te':get_plot(scoring_first)})
+                view['games'][-1]['probs'].append({'j1':aj[0],'j2':hj[0],'pj1':'{:.1f}'.format(p*100),'pj2':'{:.1f}'.format((1-p)*100),'team1':a_team.tricode,'ps1':'{:.1f}'.format(scoring_first*100),'am1':'{:.0f}'.format(am_p),'team2':h_team.tricode,'ps2':'{:.1f}'.format((1-scoring_first)*100),'am2':'{:.0f}'.format(-am_p),'chart_pl':get_plot(p,a_color,h_color),'chart_te':get_plot(scoring_first,a_color,h_color)})
 
 
 
@@ -259,12 +284,11 @@ def team_page(request,team_id):
     context={'year':[],'teams':[],'team':t.full_name,'logo':'images/'+t.tricode+'.png'}
     
     for _t in Team.objects.all():
-        if '2020' in _t.stats and len(_t.stats['2020']['starters'])>0:
-            context['teams'].append({
-            'team_id':_t.team_id,
-            'nick':_t.names[0],
-            's_logo':'images/s_{}.png'.format(_t.tricode)
-            })
+        context['teams'].append({
+        'team_id':_t.team_id,
+        'nick':_t.names[0],
+        's_logo':'images/s_{}.png'.format(_t.tricode)
+        })
     
     
     
@@ -377,12 +401,11 @@ def elo_standing(request):
     context={'list':[], 'teams':[]}
     
     for t in Team.objects.all():
-        if '2020' in t.stats and len(t.stats['2020']['starters'])>0:
-            context['teams'].append({
-            'team_id':t.team_id,
-            'nick':t.names[0],
-            's_logo':'images/s_{}.png'.format(t.tricode)
-            })
+        context['teams'].append({
+        'team_id':t.team_id,
+        'nick':t.names[0],
+        's_logo':'images/s_{}.png'.format(t.tricode)
+        })
     
 
     ss=[]
@@ -404,13 +427,12 @@ def elo_compare(request):
 
     
     for t in Team.objects.all():
-        if '2020' in t.stats and len(t.stats['2020']['starters'])>0:
-            context['teams_sel'].append({'team_id':t.team_id,'full_name':t.full_name})
-            context['teams'].append({
-            'team_id':t.team_id,
-            'nick':t.names[0],
-            's_logo':'images/s_{}.png'.format(t.tricode)
-            })
+        context['teams_sel'].append({'team_id':t.team_id,'full_name':t.full_name})
+        context['teams'].append({
+        'team_id':t.team_id,
+        'nick':t.names[0],
+        's_logo':'images/s_{}.png'.format(t.tricode)
+        })
             
     for p in Player.objects.all().order_by('-jumps_jumped'):
         #filter for currently playing
