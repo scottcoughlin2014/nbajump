@@ -68,33 +68,33 @@ def updateELO(_id1, _id2, _winner_id):
     
     return newRating1,newRating2
     
-def updateELO_team(_id_off, _id_def, _winner_id,year):
+def updateELO_team(id_off, id_def, _winner_id,yyear):
 
-    team_off = Team.objects.get(team_id=_id_off)
-    team_def = Team.objects.get(team_id=_id_def)
+    team_off = Team.objects.get(team_id=id_off)
+    team_def = Team.objects.get(team_id=id_def)
 
-    rating_off = team_off.stats[year]['elo_off']
-    rating_def = team_def.stats[year]['elo_def']
+    rating_off = team_off.stats[yyear]['elo_off']
+    rating_def = team_def.stats[yyear]['elo_def']
 
     print(rating_off,rating_def)
     
     expected_off = compareRating(rating_off,rating_def)
     expected_def = compareRating(rating_def,rating_off)
 
-    if _winner_id == _id_off:
+    if _winner_id == id_off:
         score_off = 1.0
         score_def = 0.0
-    elif _winner_id == _id_def:
+    elif _winner_id == id_def:
         score_off = 0.0
         score_def = 1.0
 
     #20 jumps are the minimum for the elo_score to be considered reliable
-    if len(team_off.stats[year]['games_played']) <= 20:
+    if len(team_off.stats[yyear]['games_played']) <= 20:
         k_factor_off = 40
     else:
         k_factor_off = 20
 
-    if len(team_def.stats[year]['games_played']) <= 20:
+    if len(team_def.stats[yyear]['games_played']) <= 20:
         k_factor_def = 40
     else:
         k_factor_def = 20
@@ -113,13 +113,13 @@ def updateELO_team(_id_off, _id_def, _winner_id,year):
         newRating_def = 0
         newRating_off = rating_off - rating_def
 
-    team_off.stats[year]['elo_off'] = newRating_off
+    team_off.stats[yyear]['elo_off'] = newRating_off
     team_off.save()
     
-    team_def.stats[year]['elo_def'] = newRating_def
+    team_def.stats[yyear]['elo_def'] = newRating_def
     team_def.save()
 
-    print(Team.objects.get(team_id=_id_off).stats[year]['elo_off'],Team.objects.get(team_id=_id_def).stats[year]['elo_def'])
+    print(Team.objects.get(team_id=id_off).stats[yyear]['elo_off'],Team.objects.get(team_id=id_def).stats[yyear]['elo_def'])
 
     return newRating_off,newRating_def
 
@@ -562,11 +562,11 @@ def update_stats(_year):
                 if play["isScoreChange"]==1:
                     t_off.stats[year]['first_shooter'].append([shooter,1])
                     print('{0} scored with their first shot.'.format(t_off.full_name))
-                    updateELO_team(play["teamId"], id_def, play["teamId"],year)
+                    winner=play["teamId"]
                 else:
                     t_off.stats[year]['first_shooter'].append([shooter,0])
                     print('{0} missed their first shot.'.format(t_off.full_name))
-                    updateELO_team(play["teamId"], id_def, id_def,year)
+                    winner=id_def
                     
                 game.all_first_shooters.append(shooter)
                 
@@ -576,6 +576,7 @@ def update_stats(_year):
                     print('The shot was a 3-pointer.')
                 t_off.last_update = TODAY_UTC
                 t_off.save()
+                updateELO_team(play["teamId"], id_def,winner,year)
                 
                 
                 #tracking what team shot already
@@ -596,11 +597,11 @@ def update_stats(_year):
                 if play["isScoreChange"]==1:
                     t_off.stats[year]['first_shooter'].append([shooter,1])
                     print('{0} scored with their first shot.'.format(t_off.full_name))
-                    updateELO_team(play["teamId"], id_def, play["teamId"],year)
+                    winner=play["teamId"]
                 else:
                     t_off.stats[year]['first_shooter'].append([shooter,0])
                     print('{0} missed their first shot.'.format(t_off.full_name))
-                    updateELO_team(play["teamId"], id_def, id_def,year)
+                    winner=id_def
                 
                 game.all_first_shooters.append(shooter)
                 
@@ -610,6 +611,8 @@ def update_stats(_year):
                     print('The shot was a 3-pointer.')
                 t_off.last_update = TODAY_UTC
                 t_off.save()
+                updateELO_team(play["teamId"], id_def,winner,year)
+                
                 
                 shot=2
 
