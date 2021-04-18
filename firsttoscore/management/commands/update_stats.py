@@ -75,8 +75,6 @@ def updateELO_team(id_off, id_def, _winner_id,yyear):
 
     rating_off = team_off.stats[yyear]['elo_off']
     rating_def = team_def.stats[yyear]['elo_def']
-
-    print(rating_off,rating_def)
     
     expected_off = compareRating(rating_off,rating_def)
     expected_def = compareRating(rating_def,rating_off)
@@ -103,8 +101,6 @@ def updateELO_team(id_off, id_def, _winner_id,yyear):
     newRating_off = rating_off + k_factor_off * (score_off - expected_off)
     newRating_def = rating_def + k_factor_def * (score_def - expected_def)
 
-    print(newRating_off,newRating_def)
-
     if newRating_off < 0:
         newRating_off = 0
         newRating_def = rating_def - rating_off
@@ -118,8 +114,6 @@ def updateELO_team(id_off, id_def, _winner_id,yyear):
     
     team_def.stats[yyear]['elo_def'] = newRating_def
     team_def.save()
-
-    print(Team.objects.get(team_id=id_off).stats[yyear]['elo_off'],Team.objects.get(team_id=id_def).stats[yyear]['elo_def'])
 
     return newRating_off,newRating_def
 
