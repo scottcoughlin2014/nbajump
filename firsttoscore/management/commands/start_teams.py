@@ -340,7 +340,7 @@ class Command(BaseCommand):
                 if update in [0]:
                     print('Initializing teams stats for {0}.'.format(options["year"]))
                     update=1
-                t.stats[options["year"]]={'first_shot_three': 0, 'tip_off_won':0, 'scored_first_after_winning_tip_off':0, 'scored_first':0,'foul_first_defence':0, 'games_played':[], 'first_scorer':[], 'first_shooter':[], 'jumpers':[],'jumper_list':[], 'starters':[]}
+                t.stats[options["year"]]={'first_shot_three': 0, 'tip_off_won':0, 'scored_first_after_winning_tip_off':0, 'scored_first':0,'foul_first_defence':0, 'games_played':[], 'first_scorer':[], 'first_shooter':[], 'jumpers':[],'jumper_list':[], 'starters':[],'elo_off':1500,'elo_def':1500}
                 t.save()
 
         if not update:
