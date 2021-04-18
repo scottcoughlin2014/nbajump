@@ -244,16 +244,7 @@ def update_stats(_year):
 
     #scrolling through the games
     for game in schedule:
-    
-        #___________________________________________
-        # game["seasonStageId"]==1 -> pre-season
-        # game["seasonStageId"]==2 -> regular-season
-        # game["seasonStageId"]==3 -> exhibition game (like the All-Star Game)
-        # game["seasonStageId"]==4 -> playoffs
-        #___________________________________________
-        
-        # skipping games not played yet, and including only main-season.
-        if (game.game_utc > TODAY_UTC) or game.stage==1 or game.stage==3:
+        if (game.game_utc > TODAY_UTC):
             continue
 
         #keeping track of which teams are playing
