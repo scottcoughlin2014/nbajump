@@ -163,9 +163,12 @@ def todays_games(request,day):
 
         
         out=[[],[]]
-        for i,d in enumerate([a_d,h_d]):
+        for i,tt in enumerate([a_team,h_team]):
+            d=tt.stats[str(_year)]
             for _s in d['jumper_list']:
                 p=Player.objects.get(nba_id=_s)
+                if int(p.team_id)!=int(tt.team_id):
+                    continue
                 out[i].append([p.last_name,p.elo_score,p.jumps_jumped,p.nba_id])
 
         out[0]=sorted(out[0],reverse=1,key=itemgetter(2))
@@ -353,8 +356,11 @@ def team_page(request,team_id):
 
 
         context['year'][-1]['jumpers']=[]
+        
         for _s in d['jumper_list']:
             p=Player.objects.get(nba_id=_s)
+            if int(p.team_id)!=int(team_id):
+                continue
             context['year'][-1]['jumpers'].append({'name':p.last_name,'elo':'{:.0f}'.format(p.elo_score),'jumps':p.jumps_jumped})
 
 
