@@ -17,7 +17,9 @@ __author__ = 'Giacomo Terreran <gqterre@gmail.com>'
 __credits__ = ['Scott Coughlin <scottcoughlin2014@u.northwestern.edu>',
                'Kyle Kremer <kylekremer23@gmail.com>']
 
-def scoring_first_probability(pj,oe_1,oe_2):
+def scoring_first_probability(pj,oe_a,oe_h):
+    #pj is the probability that the away team win the tip-off
+
     #team 1 has pj_1 probability to win the tip off and then oe_1 to score.
     #so the probability to win the tip-off and scoring immediately after is
     #p=pj_1*oe_1
@@ -26,25 +28,25 @@ def scoring_first_probability(pj,oe_1,oe_2):
     #p=pj_1*(1-oe_1)*(oe_2)
     
     
-    team_1_probability=0
-    team_2_probability=0
+    team_a_probability=0
+    team_h_probability=0
     #k-th posession for the team which won the tip-off
     #j-th posession for the team which won the tip-off
     k=0
     j=0
     while 1:
         if k==j:
-            team_1_probability= team_1_probability + pj * (1-oe_1)**k * (1-oe_2)**j * oe_1
-            team_2_probability= team_2_probability + (1-pj) * (1-oe_2)**k * (1-oe_1)**j * oe_2
+            team_a_probability= team_a_probability + pj * (1-oe_a)**k * (1-oe_h)**j * oe_a
+            team_h_probability= team_h_probability + (1-pj) * (1-oe_h)**k * (1-oe_a)**j * oe_h
             k+=1
         else:
-            team_2_probability= team_2_probability + pj * (1-oe_1)**k * (1-oe_2)**j * oe_2
-            team_1_probability= team_1_probability + (1-pj) * (1-oe_2)**k * (1-oe_1)**j * oe_1
+            team_h_probability= team_h_probability + pj * (1-oe_a)**k * (1-oe_h)**j * oe_h
+            team_a_probability= team_a_probability + (1-pj) * (1-oe_h)**k * (1-oe_a)**j * oe_a
             j+=1
 
-        if 1.-(team_1_probability+team_2_probability)<1e-7:
+        if 1.-(team_a_probability+team_h_probability)<1e-7:
             break
-    return team_1_probability
+    return team_a_probability
 
 def print_out(_field, _value1, _value2):
     print('{: >35} {: >27} {: >27}'.format(_field,_value1,_value2))

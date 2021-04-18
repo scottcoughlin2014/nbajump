@@ -54,8 +54,8 @@ def todays_games(request,day):
 
     #Checking what games are played today
     
-    #TODAY_UTC = timezone.now()
-    TODAY_UTC = datetime.strptime('2021-03-11', '%Y-%m-%d')
+    TODAY_UTC = timezone.now()
+    #TODAY_UTC = datetime.strptime('2021-03-11', '%Y-%m-%d')
     eastern = pytz.timezone('US/Eastern')
     TODAY = TODAY_UTC.astimezone(eastern)
     print(TODAY)
@@ -145,7 +145,7 @@ def todays_games(request,day):
         total_shots=[0,0]
         total_shots_made=[0,0]
         for i,d in enumerate([a_d,h_d]):
-            for _s in d['first_shooter']:
+            for _s in d['first_shooter'][-10:]:
                 total_shots[i]+=1
                 total_shots_made[i]+=_s[1]
     
@@ -208,14 +208,33 @@ def todays_games(request,day):
                 out[i]=new_out
 
 
+        view['games'][-1]['away_elo_off']=a_d['elo_off']
+        view['games'][-1]['away_elo_def']=a_d['elo_def']
+        view['games'][-1]['home_elo_off']=h_d['elo_off']
+        view['games'][-1]['home_elo_def']=h_d['elo_def']
+
+
         view['games'][-1]['probs']=[]
 
         for aj in out[0]:
             for hj in out[1]:
+                #probability that the away jumper win the tip-off
                 p=compareRating(aj[1],hj[1])
-                scoring_first=scoring_first_probability(p,a_offensive_efficiency,h_offensive_efficiency)
+                
+                #probabulity that away offense score vs the home defence
+                p_ah=compareRating(a_d['elo_off'],h_d['elo_def'])
+                #probabulity that home offense score vs the away defence
+                p_ha=compareRating(h_d['elo_off'],a_d['elo_def'])
+                
+                
+                #probabilty that the away team score first
+                #scoring_first=scoring_first_probability(p,a_offensive_efficiency,h_offensive_efficiency)
+                scoring_first=scoring_first_probability(p,p_ah,p_ha)
                 if scoring_first<0.5:
-                    am_p=100.*(1.-scoring_first)/scoring_first
+                    if scoring_first==0:
+                        am_p=10000
+                    else:
+                        am_p=100.*(1.-scoring_first)/scoring_first
                 else:
                     am_p=-100.*scoring_first/(1.-scoring_first)
                 view['games'][-1]['probs'].append({'j1':aj[0],'j2':hj[0],'pj1':'{:.1f}'.format(p*100),'pj2':'{:.1f}'.format((1-p)*100),'team1':a_team.tricode,'ps1':'{:.1f}'.format(scoring_first*100),'am1':'{:.0f}'.format(am_p),'team2':h_team.tricode,'ps2':'{:.1f}'.format((1-scoring_first)*100),'am2':'{:.0f}'.format(-am_p),'chart_pl':get_plot(p,a_color,h_color),'chart_te':get_plot(scoring_first,a_color,h_color)})
@@ -328,6 +347,9 @@ def team_page(request,team_id):
         context['year'][-1]['shot_made']=total_shots_made
         context['year'][-1]['total_shots']=total_shots
         context['year'][-1]['shot_made_p']='{:.1f}'.format(total_shots_made/total_shots*100.)
+
+        context['year'][-1]['elo_off']=d['elo_off']
+        context['year'][-1]['elo_def']=d['elo_def']
 
 
         context['year'][-1]['jumpers']=[]

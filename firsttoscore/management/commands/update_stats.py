@@ -67,6 +67,61 @@ def updateELO(_id1, _id2, _winner_id):
     player2.save()
     
     return newRating1,newRating2
+    
+def updateELO_team(_id_off, _id_def, _winner_id,year):
+
+    team_off = Team.objects.get(team_id=_id_off)
+    team_def = Team.objects.get(team_id=_id_def)
+
+    rating_off = team_off.stats[year]['elo_off']
+    rating_def = team_def.stats[year]['elo_def']
+
+    print(rating_off,rating_def)
+    
+    expected_off = compareRating(rating_off,rating_def)
+    expected_def = compareRating(rating_def,rating_off)
+
+    if _winner_id == _id_off:
+        score_off = 1.0
+        score_def = 0.0
+    elif _winner_id == _id_def:
+        score_off = 0.0
+        score_def = 1.0
+
+    #20 jumps are the minimum for the elo_score to be considered reliable
+    if len(team_off.stats[year]['games_played']) <= 20:
+        k_factor_off = 40
+    else:
+        k_factor_off = 20
+
+    if len(team_def.stats[year]['games_played']) <= 20:
+        k_factor_def = 40
+    else:
+        k_factor_def = 20
+
+
+    newRating_off = rating_off + k_factor_off * (score_off - expected_off)
+    newRating_def = rating_def + k_factor_def * (score_def - expected_def)
+
+    print(newRating_off,newRating_def)
+
+    if newRating_off < 0:
+        newRating_off = 0
+        newRating_def = rating_def - rating_off
+
+    elif newRating_def < 0:
+        newRating_def = 0
+        newRating_off = rating_off - rating_def
+
+    team_off.stats[year]['elo_off'] = newRating_off
+    team_off.save()
+    
+    team_def.stats[year]['elo_def'] = newRating_def
+    team_def.save()
+
+    print(Team.objects.get(team_id=_id_off).stats[year]['elo_off'],Team.objects.get(team_id=_id_def).stats[year]['elo_def'])
+
+    return newRating_off,newRating_def
 
 def find_starters(pbp,_year):
     starters={}
@@ -496,25 +551,31 @@ def update_stats(_year):
             
             #first shooter
             if shot==0 and play["eventMsgType"] in ["1","2","3"]:
-                t=Team.objects.get(team_id=play["teamId"])
+                t_off=Team.objects.get(team_id=play["teamId"])
+                if play["teamId"]==game.a_team:
+                    id_def=game.h_team
+                else:
+                    id_def=game.a_team
                 shooter=play["personId"]
                 #adding the shooter to the teams list of first shooter.
                 #1 -> he made it ; 0 -> he didn't make it
                 if play["isScoreChange"]==1:
-                    t.stats[year]['first_shooter'].append([shooter,1])
-                    print('{0} scored with their first shot.'.format(t.full_name))
+                    t_off.stats[year]['first_shooter'].append([shooter,1])
+                    print('{0} scored with their first shot.'.format(t_off.full_name))
+                    updateELO_team(play["teamId"], id_def, play["teamId"],year)
                 else:
-                    t.stats[year]['first_shooter'].append([shooter,0])
-                    print('{0} missed their first shot.'.format(t.full_name))
-                
+                    t_off.stats[year]['first_shooter'].append([shooter,0])
+                    print('{0} missed their first shot.'.format(t_off.full_name))
+                    updateELO_team(play["teamId"], id_def, id_def,year)
+                    
                 game.all_first_shooters.append(shooter)
                 
                 #checking if the shot was a 3pt
                 if '3pt' in play['description']:
-                    t.stats[year]['first_shot_three']+=1
+                    t_off.stats[year]['first_shot_three']+=1
                     print('The shot was a 3-pointer.')
-                t.last_update = TODAY_UTC
-                t.save()
+                t_off.last_update = TODAY_UTC
+                t_off.save()
                 
                 
                 #tracking what team shot already
@@ -524,25 +585,31 @@ def update_stats(_year):
             
             
             if shot==1 and play["eventMsgType"] in ["1","2","3"] and play["teamId"]!= shooting_team:
-                t=Team.objects.get(team_id=play["teamId"])
+                t_off=Team.objects.get(team_id=play["teamId"])
+                if play["teamId"]==game.a_team:
+                    id_def=game.h_team
+                else:
+                    id_def=game.a_team
                 shooter=play["personId"]
                 #adding the shooter to the teams list of first shooter.
                 #1 -> he made it ; 0 -> he didn't make it
                 if play["isScoreChange"]==1:
-                    t.stats[year]['first_shooter'].append([shooter,1])
-                    print('{0} scored with their first shot.'.format(t.full_name))
+                    t_off.stats[year]['first_shooter'].append([shooter,1])
+                    print('{0} scored with their first shot.'.format(t_off.full_name))
+                    updateELO_team(play["teamId"], id_def, play["teamId"],year)
                 else:
-                    t.stats[year]['first_shooter'].append([shooter,0])
-                    print('{0} missed their first shot.'.format(t.full_name))
+                    t_off.stats[year]['first_shooter'].append([shooter,0])
+                    print('{0} missed their first shot.'.format(t_off.full_name))
+                    updateELO_team(play["teamId"], id_def, id_def,year)
                 
                 game.all_first_shooters.append(shooter)
                 
                 #checking if the shot was a 3pt
                 if '3pt' in play['description']:
-                    t.stats[year]['first_shot_three']+=1
+                    t_off.stats[year]['first_shot_three']+=1
                     print('The shot was a 3-pointer.')
-                t.last_update = TODAY_UTC
-                t.save()
+                t_off.last_update = TODAY_UTC
+                t_off.save()
                 
                 shot=2
 
