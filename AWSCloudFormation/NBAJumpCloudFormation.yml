@@ -1,0 +1,491 @@
+AWSTemplateFormatVersion: 2010-09-09
+Metadata:
+  'AWS::CloudFormation::Designer':
+    39a255cf-a6dc-4f04-86b9-704ea19e3c3a:
+      size:
+        width: 2220
+        height: 1470
+      position:
+        x: 530
+        'y': 40
+      z: 1
+      embeds:
+        - bd152c20-153b-4310-a544-274cb78ba10f
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+    a7f7844f-d9b9-47bf-9be2-3866b787d926:
+      size:
+        width: 1230
+        height: 840
+      position:
+        x: 670
+        'y': 120
+      z: 2
+      parent: 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+      embeds:
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - ea76eb1f-1e5b-4c1c-89bf-3ead7b6a3849
+      iscontainedinside:
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+    ea76eb1f-1e5b-4c1c-89bf-3ead7b6a3849:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 1600
+        'y': 300
+      z: 3
+      parent: a7f7844f-d9b9-47bf-9be2-3866b787d926
+      embeds: []
+      iscontainedinside:
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+        - a7f7844f-d9b9-47bf-9be2-3866b787d926
+      dependson:
+        - f777af3b-19ba-4045-bc53-f4d12c21be79
+    bd152c20-153b-4310-a544-274cb78ba10f:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 2050
+        'y': 270
+      z: 2
+      parent: 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+      embeds: []
+      iscontainedinside:
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+    7e377bf7-60c1-4d34-b311-31b0b8ad21bc:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 80
+        'y': 110
+      z: 1
+      embeds: []
+    6e81586e-7457-4f9d-a6c9-a80e092d2966:
+      source:
+        id: 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+      target:
+        id: 7e377bf7-60c1-4d34-b311-31b0b8ad21bc
+      z: 1
+    48ae2f5a-d307-44ca-88ad-0ee92aa8b48e:
+      size:
+        width: 720
+        height: 450
+      position:
+        x: 750
+        'y': 330
+      z: 3
+      parent: a7f7844f-d9b9-47bf-9be2-3866b787d926
+      embeds:
+        - f777af3b-19ba-4045-bc53-f4d12c21be79
+      iscontainedinside:
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+        - 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+    f777af3b-19ba-4045-bc53-f4d12c21be79:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 1230
+        'y': 540
+      z: 4
+      parent: 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+      embeds: []
+      iscontainedinside:
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+        - 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+      dependson:
+        - 7e377bf7-60c1-4d34-b311-31b0b8ad21bc
+    d957f68d-f828-41a4-85fc-708570c6a4c5:
+      source:
+        id: 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+      target:
+        id: a7f7844f-d9b9-47bf-9be2-3866b787d926
+      z: 3
+    57a620be-58cc-4255-98a2-6d7dfd71243b:
+      source:
+        id: f777af3b-19ba-4045-bc53-f4d12c21be79
+      target:
+        id: 7e377bf7-60c1-4d34-b311-31b0b8ad21bc
+      z: 5
+Resources:
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      CidrBlock: 10.0.0.0/16
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 39a255cf-a6dc-4f04-86b9-704ea19e3c3a
+  PublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.0/24
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: a7f7844f-d9b9-47bf-9be2-3866b787d926
+  WebServerInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !FindInMap 
+        - AWSRegionArch2AMI
+        - !Ref 'AWS::Region'
+        - !FindInMap 
+          - AWSInstanceType2Arch
+          - !Ref InstanceType
+          - Arch
+      KeyName: !Ref KeyName
+      NetworkInterfaces:
+        - GroupSet:
+            - !Ref WebServerSecurityGroup
+          AssociatePublicIpAddress: 'true'
+          DeviceIndex: '0'
+          DeleteOnTermination: 'true'
+          SubnetId: !Ref PublicSubnet
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          rpm -Uvh https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm
+          yum update -y # good practice to update existing packages
+          easy_install --script-dir /opt/aws/bin https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
+          #/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServerInstance --region ${AWS::Region} --configsets All
+          #/opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerInstance --region ${AWS::Region}
+          yum group install "Development Tools" -y
+          yum install -y mod_ssl httpd-devel httpd mod_wsgi wget git
+          systemctl start httpd && systemctl enable httpd
+          yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+          yum install postgresql12 postgresql12-server -y
+          /usr/pgsql-12/bin/postgresql-12-setup initdb
+          systemctl enable postgresql-12
+          systemctl start postgresql-12
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/anaconda3.sh
+          bash /tmp/anaconda3.sh -b -p /opt/anaconda3
+          rm /tmp/anaconda3.sh
+          useradd webapp
+          usermod -a -G apache webapp
+          echo ". /opt/anaconda3/etc/profile.d/conda.sh" >> /home/centos/.bashrc
+          echo ". /opt/anaconda3/etc/profile.d/conda.sh" >> /home/webapp/.bashrc
+          su - webapp bash -c 'conda create --name fanduel_nba_jumpball django python=3.8 --yes; conda activate fanduel_nba_jumpball; pip install mod_wsgi requests'
+          su - webapp bash -c 'git clone https://github.com/scottcoughlin2014/nbajump.git /home/webapp/nbajump'
+          su - webapp bash -c 'conda activate fanduel_nba_jumpball; cd /home/webapp/nbajump; git checkout production; bash src'
+          printf 'WSGIPythonHome /home/webapp/.conda/envs/fanduel_nba_jumpball/\nLoadModule wsgi_module /home/webapp/.conda/envs/fanduel_nba_jumpball/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so' > /etc/httpd/conf.modules.d/10-wsgi.conf
+          sed -i '86ihost    fanduel_nba_jumpball             jumpnba             127.0.0.1/32            md5' /var/lib/pgsql/12/data/pg_hba.conf
+          sed -i '61i# Django Application Stuff\nAlias /static /home/webapp/nbajump/static\n<Directory /home/webapp/nbajump/static>\nRequire all granted\n</Directory>\n\n<Directory /home/webapp/nbajump/jumpnba>\n<Files wsgi.py>\nRequire all granted\n</Files>\n</Directory>\nWSGIApplicationGroup %{GLOBAL}\nWSGIDaemonProcess nbajump processes=1 maximum-requests=10 threads=1 python-path=/home/webapp/nbajump/:/home/webapp/.conda/envs/fanduel_nba_jumpball/lib/python3.8/site-packages/\nWSGIProcessGroup nbajump\nWSGIScriptAlias / /home/webapp/nbajump/jumpnba/wsgi.py\nWSGIPassAuthorization On' /etc/httpd/conf.d/ssl.conf
+          sed -i '/User apache/s/User apache/User webapp/' /etc/httpd/conf/httpd.conf 
+          sed -i '/Group apache/s/Group apache/Group webapp/' /etc/httpd/conf/httpd.conf
+          setenforce 0
+          systemctl restart httpd
+          
+    DependsOn:
+      - PublicRoute
+  WebServerSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      VpcId: !Ref VPC
+      GroupDescription: Allow access from HTTP/HTTPS and SSH traffic
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: !Ref HTTPLocation
+        - IpProtocol: tcp
+          FromPort: '443'
+          ToPort: '443'
+          CidrIp: !Ref HTTPLocation
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: !Ref SSHLocation
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: bd152c20-153b-4310-a544-274cb78ba10f
+  InternetGateWay:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties: {}
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7e377bf7-60c1-4d34-b311-31b0b8ad21bc
+  EC2VPCG1679X:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateWay
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 6e81586e-7457-4f9d-a6c9-a80e092d2966
+  PublicRouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 48ae2f5a-d307-44ca-88ad-0ee92aa8b48e
+  PublicRoute:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      RouteTableId: !Ref PublicRouteTable
+      GatewayId: !Ref InternetGateWay
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f777af3b-19ba-4045-bc53-f4d12c21be79
+    DependsOn:
+      - InternetGateWay
+  EC2SRTA45W2G:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: d957f68d-f828-41a4-85fc-708570c6a4c5
+Parameters:
+  InstanceType:
+    Description: WebServer EC2 instance type
+    Type: String
+    Default: t2.small
+    AllowedValues:
+      - t1.micro
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m1.small
+      - m1.medium
+      - m1.large
+      - m1.xlarge
+      - m2.xlarge
+      - m2.2xlarge
+      - m2.4xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - c1.medium
+      - c1.xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - g2.2xlarge
+      - g2.8xlarge
+      - r3.large
+      - r3.xlarge
+      - r3.2xlarge
+      - r3.4xlarge
+      - r3.8xlarge
+      - i2.xlarge
+      - i2.2xlarge
+      - i2.4xlarge
+      - i2.8xlarge
+      - d2.xlarge
+      - d2.2xlarge
+      - d2.4xlarge
+      - d2.8xlarge
+      - hi1.4xlarge
+      - hs1.8xlarge
+      - cr1.8xlarge
+      - cc2.8xlarge
+      - cg1.4xlarge
+    ConstraintDescription: must be a valid EC2 instance type.
+  KeyName:
+    Description: Name of an EC2 KeyPair to enable SSH access to the instance.
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  SSHLocation:
+    Description: ' The IP address range that can be used to access the web server using SSH.'
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 10.120.0.0/16
+    AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  HTTPLocation:
+    Description: ' The IP address range that can be used to access the web server using HTTP/HTTPS.'
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 10.120.0.0/16
+    AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+Mappings:
+  AWSInstanceType2Arch:
+    t1.micro:
+      Arch: HVM64
+    t2.nano:
+      Arch: HVM64
+    t2.micro:
+      Arch: HVM64
+    t2.small:
+      Arch: HVM64
+    t2.medium:
+      Arch: HVM64
+    t2.large:
+      Arch: HVM64
+    m1.small:
+      Arch: HVM64
+    m1.medium:
+      Arch: HVM64
+    m1.large:
+      Arch: HVM64
+    m1.xlarge:
+      Arch: HVM64
+    m2.xlarge:
+      Arch: HVM64
+    m2.2xlarge:
+      Arch: HVM64
+    m2.4xlarge:
+      Arch: HVM64
+    m3.medium:
+      Arch: HVM64
+    m3.large:
+      Arch: HVM64
+    m3.xlarge:
+      Arch: HVM64
+    m3.2xlarge:
+      Arch: HVM64
+    m4.large:
+      Arch: HVM64
+    m4.xlarge:
+      Arch: HVM64
+    m4.2xlarge:
+      Arch: HVM64
+    m4.4xlarge:
+      Arch: HVM64
+    m4.10xlarge:
+      Arch: HVM64
+    c1.medium:
+      Arch: HVM64
+    c1.xlarge:
+      Arch: HVM64
+    c3.large:
+      Arch: HVM64
+    c3.xlarge:
+      Arch: HVM64
+    c3.2xlarge:
+      Arch: HVM64
+    c3.4xlarge:
+      Arch: HVM64
+    c3.8xlarge:
+      Arch: HVM64
+    c4.large:
+      Arch: HVM64
+    c4.xlarge:
+      Arch: HVM64
+    c4.2xlarge:
+      Arch: HVM64
+    c4.4xlarge:
+      Arch: HVM64
+    c4.8xlarge:
+      Arch: HVM64
+    g2.2xlarge:
+      Arch: HVMG2
+    g2.8xlarge:
+      Arch: HVMG2
+    r3.large:
+      Arch: HVM64
+    r3.xlarge:
+      Arch: HVM64
+    r3.2xlarge:
+      Arch: HVM64
+    r3.4xlarge:
+      Arch: HVM64
+    r3.8xlarge:
+      Arch: HVM64
+    i2.xlarge:
+      Arch: HVM64
+    i2.2xlarge:
+      Arch: HVM64
+    i2.4xlarge:
+      Arch: HVM64
+    i2.8xlarge:
+      Arch: HVM64
+    d2.xlarge:
+      Arch: HVM64
+    d2.2xlarge:
+      Arch: HVM64
+    d2.4xlarge:
+      Arch: HVM64
+    d2.8xlarge:
+      Arch: HVM64
+    hi1.4xlarge:
+      Arch: HVM64
+    hs1.8xlarge:
+      Arch: HVM64
+    cr1.8xlarge:
+      Arch: HVM64
+    cc2.8xlarge:
+      Arch: HVM64
+  AWSRegionArch2AMI:
+    us-east-1:
+      HVM64: ami-00e87074e52e6c9f9
+    us-west-2:
+      HVM64: ami-0686851c4e7b1a8e1
+    us-west-1:
+      HVM64: ami-08d2d8b00f270d03b
+    us-east-2:
+      HVM64: ami-00f8e2c955f7ffa9b
+Outputs:
+  URL:
+    Value: !Join 
+      - ''
+      - - 'http://'
+        - !GetAtt 
+          - WebServerInstance
+          - PublicIp
+    Description: Newly created application URL
